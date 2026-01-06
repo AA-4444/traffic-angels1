@@ -1,0 +1,247 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* SOTD-Level Design System - Volt Green & Black Theme */
+
+@layer base {
+  :root {
+    /* CRTVS.ai Exact Color Palette */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 8%;
+
+    --card: 0 0% 12%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 8%;
+
+    /* Lime #D4FF00 = HSL(68, 100%, 50%) */
+    --primary: 68 100% 50%;
+    --primary-foreground: 0 0% 0%;
+
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 8%;
+
+    --muted: 0 0% 92%;
+    --muted-foreground: 0 0% 45%;
+
+    --accent: 68 100% 50%;
+    --accent-foreground: 0 0% 0%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 90%;
+    --input: 0 0% 92%;
+    --ring: 68 100% 50%;
+
+    --radius: 0.5rem;
+
+    /* Volt = Lime #D4FF00 */
+    --volt: 68 100% 50%;
+    --volt-glow: 68 100% 55%;
+    --dark: 0 0% 0%;
+    --dark-elevated: 0 0% 12%;
+    --light: 0 0% 100%;
+    --light-gray: 0 0% 96%;
+    --gray: 0 0% 50%;
+    
+    /* Orange for buttons */
+    --orange: 25 95% 55%;
+
+    /* Gradients */
+    --gradient-volt: linear-gradient(135deg, hsl(68 100% 50%), hsl(75 100% 50%));
+    --gradient-dark: linear-gradient(180deg, hsl(0 0% 5%), hsl(0 0% 0%));
+    --glow-volt: 0 0 60px hsl(68 100% 50% / 0.5);
+    --glow-volt-intense: 0 0 120px hsl(68 100% 50% / 0.7);
+
+    /* Typography */
+    --font-display: 'Space Grotesk', system-ui, sans-serif;
+    --font-body: 'Space Grotesk', system-ui, sans-serif;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-body);
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: hsl(var(--volt) / 0.3);
+    color: hsl(var(--foreground));
+  }
+}
+
+/* Custom Utility Classes */
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  .text-volt {
+    color: hsl(var(--volt));
+  }
+
+  .bg-volt {
+    background-color: hsl(var(--volt));
+  }
+
+  .bg-dark {
+    background-color: hsl(var(--dark));
+  }
+
+  .bg-dark-elevated {
+    background-color: hsl(var(--dark-elevated));
+  }
+
+  .glow-volt {
+    box-shadow: var(--glow-volt);
+  }
+
+  .glow-volt-intense {
+    box-shadow: var(--glow-volt-intense);
+  }
+
+  .text-gradient-volt {
+    background: var(--gradient-volt);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .border-volt {
+    border-color: hsl(var(--volt));
+  }
+
+  /* Noise Texture Overlay */
+  .noise {
+    position: relative;
+  }
+
+  .noise::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Gradient Borders */
+  .border-gradient-volt {
+    position: relative;
+    background: hsl(var(--dark));
+    border-radius: var(--radius);
+  }
+
+  .border-gradient-volt::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    background: var(--gradient-volt);
+    border-radius: inherit;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+
+  /* Animated Underline */
+  .underline-volt {
+    position: relative;
+  }
+
+  .underline-volt::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: hsl(var(--volt));
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .underline-volt:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  /* Magnetic Button Base */
+  .magnetic-hover {
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Split Text Animation Ready */
+  .split-text {
+    overflow: hidden;
+  }
+
+  /* Smooth Scroll Section */
+  .scroll-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--dark));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--volt) / 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--volt) / 0.5);
+}
+/* Scroll-reveal words (StringTune-like) */
+.reveal-words {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.22em; /* контролирует расстояние между словами */
+  will-change: contents;
+}
+
+.reveal-word {
+  display: inline-flex;
+  will-change: transform, clip-path;
+  transform: translate3d(0, calc(100% - var(--word-progress) * 100%), 0);
+  clip-path: inset(-15% 0 calc(115% - var(--word-progress) * 130%) 0);
+
+  /* как в примере */
+  --word-turn: calc((var(--word-index) - 3) / var(--word-total));
+  --word-step: calc(1 / var(--word-total));
+  --word-progress: clamp(
+    0,
+    calc((var(--progress) - var(--word-turn)) / var(--word-step)),
+    1
+  );
+}
+
+.reveal-space {
+  display: inline-block;
+  width: 0.22em; /* расстояние между словами */
+}
