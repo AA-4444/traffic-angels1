@@ -9,8 +9,8 @@ const wordsContainer = {
   hidden: {},
   visible: {
     transition: {
-      staggerChildren: 0.09,  
-      delayChildren: 0.2,     
+      staggerChildren: 0.09,
+      delayChildren: 0.2,
     },
   },
 };
@@ -20,7 +20,7 @@ const word = {
   visible: {
     y: '0%',
     opacity: 1,
-    transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] }, 
+    transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] },
   },
 };
 
@@ -49,20 +49,17 @@ const CTASection = () => {
     const dict: Record<Lang, { kicker: string; h2: string; btn: string }> = {
       EN: {
         kicker: 'Ready to Grow?',
-        h2:
-          "Let’s build traffic that doesn’t just bring clicks — it brings profit. Partner with Traffic Angels and scale what actually works.",
+        h2: "Let’s build traffic that doesn’t just bring clicks — it brings profit. Partner with Traffic Angels and scale what actually works.",
         btn: "LET’S CONNECT",
       },
       RU: {
         kicker: 'ГОТОВЫ К РОСТУ?',
-        h2:
-          'Давайте построим трафик, который не просто даёт клики — а приносит прибыль. Traffic Angels выстраивает систему: стратегия, креатив, воронки и масштабирование.',
+        h2: 'Давайте построим трафик, который не просто даёт клики — а приносит прибыль. Traffic Angels выстраивает систему: стратегия, креатив, воронки и масштабирование.',
         btn: 'СВЯЗАТЬСЯ',
       },
       UA: {
         kicker: 'ГОТОВІ ДО ЗРОСТАННЯ?',
-        h2:
-          'Давай побудуємо трафік, який не просто приносить кліки — а дає прибуток. Traffic Angels вибудовує систему: стратегія, креатив, воронки та масштабування.',
+        h2: 'Давай побудуємо трафік, який не просто приносить кліки — а дає прибуток. Traffic Angels вибудовує систему: стратегія, креатив, воронки та масштабування.',
         btn: 'ЗВ’ЯЗАТИСЯ',
       },
     };
@@ -72,10 +69,7 @@ const CTASection = () => {
   const telegramLink = 'https://t.me/traffic_angelss';
 
   return (
-    <section
-      className="py-24 md:py-32 relative overflow-hidden"
-      style={{ backgroundColor: 'hsl(var(--volt))' }}
-    >
+    <section className="py-24 md:py-32 relative overflow-hidden" style={{ backgroundColor: 'hsl(var(--volt))' }}>
       <div className="container mx-auto px-6 relative z-10">
         <motion.div
           className="max-w-4xl"
@@ -85,32 +79,32 @@ const CTASection = () => {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         >
           <motion.span
+            key={`kicker-${lang}`} // ✅ чтобы не “глючил” при переводе
             className="inline-block text-sm font-medium tracking-[0.2em] uppercase mb-6"
             style={{ color: 'hsl(var(--dark))' }}
             initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-10%' }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            animate={{ opacity: 1, y: 0 }} // ✅ не whileInView, чтобы не пропадал при ре-рендере
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
           >
             {copy.kicker}
           </motion.span>
 
-         <motion.h2
-           className="text-3xl md:text-5xl lg:text-6xl font-display font-bold leading-tight mb-10"
-           style={{ color: 'hsl(var(--dark))' }}
-           variants={wordsContainer}
-           initial="hidden"
-           whileInView="visible"
-           viewport={{ once: true, amount: 0.35 }} // запускается когда 35% блока в экране
-         >
-           {splitWords(copy.h2).map((w, i) => (
-             <span key={`${lang}-${w}-${i}`} className="inline-block overflow-hidden mr-[0.22em]">
-               <motion.span className="inline-block" variants={word}>
-                 {w}
-               </motion.span>
-             </span>
-           ))}
-         </motion.h2>
+          <motion.h2
+            key={`cta-${lang}`} // ✅ это главный фикс: язык сменился -> новый h2 без “миганий”
+            className="text-3xl md:text-5xl lg:text-6xl font-display font-bold leading-tight mb-10"
+            style={{ color: 'hsl(var(--dark))' }}
+            variants={wordsContainer}
+            initial="hidden"
+            animate="visible" // ✅ вместо whileInView -> не исчезает при смене языка
+          >
+            {splitWords(copy.h2).map((w, i) => (
+              <span key={`${lang}-${i}`} className="inline-block overflow-hidden mr-[0.22em]">
+                <motion.span className="inline-block" variants={word}>
+                  {w}
+                </motion.span>
+              </span>
+            ))}
+          </motion.h2>
 
           <motion.div
             className="flex justify-end"
@@ -124,10 +118,7 @@ const CTASection = () => {
               target="_blank"
               rel="noreferrer"
               className="px-8 py-4 font-semibold rounded-full text-lg transition-all duration-300 inline-flex items-center gap-2"
-              style={{
-                backgroundColor: 'hsl(var(--orange))',
-                color: 'white',
-              }}
+              style={{ backgroundColor: 'hsl(var(--orange))', color: 'white' }}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >

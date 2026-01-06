@@ -30,7 +30,7 @@ export default function Header() {
 
   const [isSending, setIsSending] = useState(false);
 
-  // ✅ fixed telegram link
+ 
   const telegramLink = 'https://t.me/traffic_angelss';
 
   const t = useMemo(() => {
