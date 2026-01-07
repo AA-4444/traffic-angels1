@@ -267,7 +267,7 @@ const Footer = () => {
                   {copy.contactTitle}
                 </div>
                 <div className="mt-4 space-y-2 text-white/70">
-                  <div className="font-semibold text-white">info@trafficangeles.com</div>
+                  <div className="font-semibold text-white">info@trafficangels.com</div>
                   <div>Milan, Italy</div>
                 </div>
               </div>
