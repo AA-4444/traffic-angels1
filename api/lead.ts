@@ -14,11 +14,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 	const { name, telegram, industry, project } = req.body || {};
 
 	const text =
-	  `🔥 NEW LEAD\n\n` +
-	  `👤 Name: ${name ?? '-'}\n` +
-	  `💬 Telegram: ${telegram ?? '-'}\n` +
-	  `🏷 Industry: ${industry ?? '-'}\n` +
-	  `📝 Project: ${project ?? '-'}`;
+	  `NEW LEAD\n\n` +
+	  `Name: ${name ?? '-'}\n` +
+	  `Telegram: ${telegram ?? '-'}\n` +
+	  `Industry: ${industry ?? '-'}\n` +
+	  `Project: ${project ?? '-'}`;
 
 	const tgRes = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
 	  method: 'POST',
