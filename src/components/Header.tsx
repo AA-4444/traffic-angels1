@@ -89,11 +89,11 @@ export default function Header() {
           industryLabel: 'Industry',
           industryPh: 'Select your niche',
           industryOptions: [
-            { value: 'Grey niches', label: 'Grey niches' },
-            { value: 'E-commerce', label: 'E-commerce' },
-            { value: 'SaaS', label: 'SaaS' },
-            { value: 'Real Estate', label: 'Real Estate' },
-            { value: 'Services', label: 'Services' },
+            { value: 'Forex/Investment', label: 'Forex/Investment' },
+            { value: 'Recovery/Charge Back', label: 'Recovery/Charge Back' },
+            { value: 'Igaming', label: 'Igaming' },
+            { value: 'Telegram Channels', label: 'Telegram Channels' },
+            { value: 'Crypto', label: 'Crypto' },
             { value: 'Other', label: 'Other' },
           ],
 
@@ -130,14 +130,14 @@ export default function Header() {
 
           industryLabel: 'Ниша',
           industryPh: 'Выберите нишу',
-          industryOptions: [
-            { value: 'Серые ниши', label: 'Серые ниши' },
-            { value: 'E-commerce', label: 'E-commerce' },
-            { value: 'SaaS', label: 'SaaS' },
-            { value: 'Недвижимость', label: 'Недвижимость' },
-            { value: 'Услуги', label: 'Услуги' },
-            { value: 'Другое', label: 'Другое' },
-          ],
+         industryOptions: [
+           { value: 'Forex/Investment', label: 'Forex/Investment' },
+           { value: 'Recovery/Charge Back', label: 'Recovery/Charge Back' },
+           { value: 'Igaming', label: 'Igaming' },
+           { value: 'Telegram Channels', label: 'Telegram Channels' },
+           { value: 'Crypto', label: 'Crypto' },
+           { value: 'Другое', label: 'Другое' },
+         ],
 
           projectLabel: 'Задача',
           projectPh: 'Опишите задачу (запуск, воронки, трафик, масштабирование и т.д.)',
@@ -172,14 +172,14 @@ export default function Header() {
 
           industryLabel: 'Ніша',
           industryPh: 'Оберіть нішу',
-          industryOptions: [
-            { value: 'Сірі ніші', label: 'Сірі ніші' },
-            { value: 'E-commerce', label: 'E-commerce' },
-            { value: 'SaaS', label: 'SaaS' },
-            { value: 'Нерухомість', label: 'Нерухомість' },
-            { value: 'Послуги', label: 'Послуги' },
-            { value: 'Інше', label: 'Інше' },
-          ],
+         industryOptions: [
+           { value: 'Forex/Investment', label: 'Forex/Investment' },
+           { value: 'Recovery/Charge Back', label: 'Recovery/Charge Back' },
+           { value: 'Igaming', label: 'Igaming' },
+           { value: 'Telegram Channels', label: 'Telegram Channels' },
+           { value: 'Crypto', label: 'Crypto' },
+           { value: 'Інше', label: 'Інше' },
+         ],
 
           projectLabel: 'Задача',
           projectPh: 'Опишіть задачу (запуск, воронки, трафік, масштабування тощо)',
@@ -232,7 +232,7 @@ export default function Header() {
     const handler = () => openLead();
     window.addEventListener('volt:open-lead', handler as EventListener);
     return () => window.removeEventListener('volt:open-lead', handler as EventListener);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   }, []);
 
   const setLanguage = (v: Lang) => {
