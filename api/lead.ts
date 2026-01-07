@@ -11,16 +11,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 	  return res.status(500).json({ error: 'Missing env TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID' });
 	}
 
-	const { name, email, industry, project, source, lang } = req.body || {};
+	const { name, telegram, industry, project } = req.body || {};
 
 	const text =
 	  `🔥 NEW LEAD\n\n` +
-	  `👤 Name: ${name}\n` +
-	  `📧 Email: ${email}\n` +
-	  `🏷 Industry: ${industry}\n` +
-	  `📝 Project: ${project}\n\n` +
-	  `🌍 Source: ${source}\n` +
-	  `🌐 Lang: ${lang}`;
+	  `👤 Name: ${name ?? '-'}\n` +
+	  `💬 Telegram: ${telegram ?? '-'}\n` +
+	  `🏷 Industry: ${industry ?? '-'}\n` +
+	  `📝 Project: ${project ?? '-'}`;
 
 	const tgRes = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
 	  method: 'POST',

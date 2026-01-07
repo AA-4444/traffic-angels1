@@ -30,7 +30,6 @@ export default function Header() {
 
   const [isSending, setIsSending] = useState(false);
 
- 
   const telegramLink = 'https://t.me/traffic_angelss';
 
   const t = useMemo(() => {
@@ -49,8 +48,8 @@ export default function Header() {
           nameLabel: string;
           namePh: string;
 
-          emailLabel: string;
-          emailPh: string;
+          telegramLabel: string;
+          telegramPh: string;
 
           industryLabel: string;
           industryPh: string;
@@ -84,8 +83,8 @@ export default function Header() {
           nameLabel: 'Name',
           namePh: 'John',
 
-          emailLabel: 'Email',
-          emailPh: 'john@company.com',
+          telegramLabel: 'Telegram',
+          telegramPh: '@username or https://t.me/username',
 
           industryLabel: 'Industry',
           industryPh: 'Select your niche',
@@ -126,8 +125,8 @@ export default function Header() {
           nameLabel: 'Имя',
           namePh: 'Иван',
 
-          emailLabel: 'Почта',
-          emailPh: 'ivan@company.com',
+          telegramLabel: 'Telegram',
+          telegramPh: '@ник или https://t.me/ник',
 
           industryLabel: 'Ниша',
           industryPh: 'Выберите нишу',
@@ -168,8 +167,8 @@ export default function Header() {
           nameLabel: `Ім’я`,
           namePh: 'Іван',
 
-          emailLabel: 'Пошта',
-          emailPh: 'ivan@company.com',
+          telegramLabel: 'Telegram',
+          telegramPh: '@нік або https://t.me/нік',
 
           industryLabel: 'Ніша',
           industryPh: 'Оберіть нішу',
@@ -195,14 +194,13 @@ export default function Header() {
     return dict[lang];
   }, [lang]);
 
-  // ✅ IMPORTANT: make sure sections ids exist in DOM
   const hrefMap = useMemo<Record<NavId, string>>(
     () => ({
       services: '#services',
       work: '#work',
       about: '#about',
       news: '/news',
-      steps: '#steps', // ✅ was '#process'
+      steps: '#steps',
       contact: '#contact',
     }),
     []
@@ -253,7 +251,6 @@ export default function Header() {
 
     if (location.pathname !== '/') {
       navigate('/');
-      // ✅ was 50ms (too short sometimes)
       setTimeout(scroll, 120);
       return;
     }
@@ -263,7 +260,7 @@ export default function Header() {
 
   const submitLead = async (payload: {
     name: string;
-    email: string;
+    telegram: string;
     industry: string;
     project: string;
     source: string;
@@ -298,11 +295,7 @@ export default function Header() {
           <div className="container mx-auto px-4 md:px-6 h-20 flex items-center justify-between">
             <div className="lg:hidden w-12" />
 
-            {/* ✅ avoid button nesting by using as="div" */}
-            <MagneticButton
-              as="div"
-              className="flex items-center gap-2 lg:absolute lg:left-1/2 lg:-translate-x-1/2"
-            >
+            <MagneticButton as="div" className="flex items-center gap-2 lg:absolute lg:left-1/2 lg:-translate-x-1/2">
               <Link to="/" className="px-4 py-2 rounded-lg flex items-center justify-center bg-primary">
                 <span className="text-primary-foreground font-display font-bold text-base tracking-wide">VOLT</span>
               </Link>
@@ -321,12 +314,7 @@ export default function Header() {
                 }
 
                 return (
-                  <MagneticButton
-                    key={id}
-                    as="div"
-                    className={hoverPill}
-                    onClick={() => goToSection(hrefMap[id])}
-                  >
+                  <MagneticButton key={id} as="div" className={hoverPill} onClick={() => goToSection(hrefMap[id])}>
                     <span>{t.nav[id]}</span>
                   </MagneticButton>
                 );
@@ -526,12 +514,8 @@ export default function Header() {
               <div className="p-5 sm:p-8">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    {/* ✅ kicker black */}
                     <div className="text-black text-sm font-mono uppercase tracking-widest">{t.lead.kicker}</div>
-
-                    <div className="font-display font-bold text-2xl sm:text-4xl text-foreground mt-2">
-                      {t.lead.title}
-                    </div>
+                    <div className="font-display font-bold text-2xl sm:text-4xl text-foreground mt-2">{t.lead.title}</div>
                     <div className="text-muted-foreground mt-2">{t.lead.subtitle}</div>
                   </div>
 
@@ -552,7 +536,7 @@ export default function Header() {
 
                     submitLead({
                       name: String(fd.get('name') || ''),
-                      email: String(fd.get('email') || ''),
+                      telegram: String(fd.get('telegram') || ''),
                       industry: String(fd.get('industry') || ''),
                       project: String(fd.get('project') || ''),
                       source: window.location.pathname || 'unknown',
@@ -570,14 +554,19 @@ export default function Header() {
                         placeholder={t.lead.namePh}
                       />
                     </div>
+
                     <div>
-                      <label className="block text-sm font-semibold text-foreground mb-2">{t.lead.emailLabel}</label>
+                      <label className="block text-sm font-semibold text-foreground mb-2">{t.lead.telegramLabel}</label>
                       <input
-                        name="email"
+                        name="telegram"
                         required
-                        type="email"
+                        type="text"
+                        inputMode="text"
+                        autoCapitalize="off"
+                        autoCorrect="off"
+                        spellCheck={false}
                         className="w-full rounded-2xl border border-border bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-[hsl(var(--volt))]"
-                        placeholder={t.lead.emailPh}
+                        placeholder={t.lead.telegramPh}
                       />
                     </div>
                   </div>
