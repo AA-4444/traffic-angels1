@@ -177,7 +177,7 @@ function CardInner({ i, step, theme, total }: { i: number; step: Step; theme: Th
             theme.text === 'text-white' ? 'text-white/55' : 'text-black/55',
           ].join(' ')}
         >
-          VOLT / PROCESS
+          TRAFFIC ANGELS / PROCESS
         </div>
         <div
           className={[

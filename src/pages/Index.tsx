@@ -10,19 +10,36 @@ import About from '@/components/AboutSection';
 const Index = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
-
       <Header />
 
       <main>
-        <Hero3D />
+        <section id="top">
+          <Hero3D />
+        </section>
+
+        <section id="about">
           <About />
-        <FeaturesSection />
-        
-        <CasesSection />
-        <ProcessSection />
-      
-        <CTASection />
-         
+        </section>
+
+        {/* services */}
+        <section id="services">
+          <FeaturesSection />
+        </section>
+
+        {/* work */}
+        <section id="work">
+          <CasesSection />
+        </section>
+
+        {/* steps */}
+        <section id="steps">
+          <ProcessSection />
+        </section>
+
+        {/* contact */}
+        <section id="contact">
+          <CTASection />
+        </section>
       </main>
 
       <Footer />

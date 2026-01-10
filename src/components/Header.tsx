@@ -3,10 +3,11 @@ import { useEffect, useMemo, useState } from 'react';
 import MagneticButton from './MagneticButton';
 import { X } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import logo from '@/assets/logo.svg';
 
 type Lang = 'EN' | 'RU' | 'UA';
 
-const navIds = ['services', 'work', 'about', 'news', 'steps', 'contact'] as const;
+const navIds = ['home', 'about', 'services', 'work', 'steps', 'contact'] as const;
 type NavId = (typeof navIds)[number];
 
 const TelegramIcon = ({ className = 'w-5 h-5' }: { className?: string }) => (
@@ -66,12 +67,12 @@ export default function Header() {
     > = {
       EN: {
         nav: {
-          services: 'Services',
-          work: 'Work',
-          about: 'About',
-          news: 'News',
-          steps: 'Steps',
-          contact: 'Contact',
+         home: 'Home',
+         about: 'About',
+         services: 'Services',
+         work: 'Work',
+         steps: 'Process',
+         contact: 'Contact',
         },
         telegram: 'Telegram',
         getStarted: 'Get Started',
@@ -108,12 +109,12 @@ export default function Header() {
 
       RU: {
         nav: {
-          services: 'Услуги',
-          work: 'Кейсы',
-          about: 'О нас',
-          news: 'Новости',
-          steps: 'Шаги',
-          contact: 'Контакты',
+         home: 'Главная',
+         about: 'О нас',
+         services: 'Услуги',
+         work: 'Кейсы',
+         steps: 'Процесс',
+         contact: 'Контакты',
         },
         telegram: 'Telegram',
         getStarted: 'Начать',
@@ -150,11 +151,11 @@ export default function Header() {
 
       UA: {
         nav: {
+          home: 'Головна',
+          about: 'Про нас',
           services: 'Послуги',
           work: 'Кейси',
-          about: 'Про нас',
-          news: 'Новини',
-          steps: 'Кроки',
+          steps: 'Процес',
           contact: 'Контакти',
         },
         telegram: 'Telegram',
@@ -295,11 +296,22 @@ export default function Header() {
           <div className="container mx-auto px-4 md:px-6 h-20 flex items-center justify-between">
             <div className="lg:hidden w-12" />
 
-            <MagneticButton as="div" className="flex items-center gap-2 lg:absolute lg:left-1/2 lg:-translate-x-1/2">
-              <Link to="/" className="px-4 py-2 rounded-lg flex items-center justify-center bg-primary">
-                <span className="text-primary-foreground font-display font-bold text-base tracking-wide">VOLT</span>
-              </Link>
-            </MagneticButton>
+           <MagneticButton
+             as="div"
+             className="flex items-center gap-2 lg:absolute lg:left-1/2 lg:-translate-x-1/2"
+           >
+             <Link
+               to="/"
+               className="px-4 py-2 rounded-lg flex items-center justify-center bg-primary"
+             >
+               <img
+                 src={logo}
+                 alt="Volt logo"
+                 className="h-8 md:h-9 w-auto select-none"
+                 draggable={false}
+               />
+             </Link>
+           </MagneticButton>
 
             <nav className="hidden lg:flex items-center gap-3">
               {navIds.map((id) => {

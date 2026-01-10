@@ -71,7 +71,7 @@ const CasesSection = () => {
             id: 2,
             title: 'Recovery и Chargeback-кампания',
             subtitle: 'Юридические и финансовые услуги',
-            image: case2,
+            image: case3,
             goal: 'Привлечение качественных лидов для recovery-сервисов с жёсткой фильтрацией аудитории.',
             metrics: [
               { label: 'Потраченный бюджет', value: '$48000' },
@@ -90,7 +90,7 @@ const CasesSection = () => {
             id: 3,
             title: 'Привлечение пользователей в iGaming',
             subtitle: 'Масштабируемый performance-трафик',
-            image: case3,
+            image: case2,
             goal: 'Масштабирование пользовательского трафика с контролем CPA и retention.',
             metrics: [
               { label: 'Потраченный бюджет', value: '$39000' },
@@ -139,7 +139,7 @@ const CasesSection = () => {
             id: 2,
             title: 'Recovery / Chargeback Campaign',
             subtitle: 'Legal and financial services',
-            image: case2,
+            image: case3,
             goal: 'Acquire high-quality leads for recovery services with strict audience filtering.',
             metrics: [
               { label: 'Budget Spent', value: '$48000' },
@@ -158,7 +158,7 @@ const CasesSection = () => {
             id: 3,
             title: 'iGaming User Acquisition',
             subtitle: 'Scalable performance traffic',
-            image: case3,
+            image: case2,
             goal: 'Scale user acquisition while controlling CPA and retention.',
             metrics: [
               { label: 'Budget Spent', value: '$39000' },
@@ -207,7 +207,7 @@ const CasesSection = () => {
             id: 2,
             title: 'Recovery та Chargeback-кампанія',
             subtitle: 'Юридичні та фінансові послуги',
-            image: case2,
+            image: case3,
             goal: 'Залучення якісних лідів для recovery-сервісів із жорсткою фільтрацією аудиторії.',
             metrics: [
               { label: 'Витрачений бюджет', value: '$48000' },
@@ -226,7 +226,7 @@ const CasesSection = () => {
             id: 3,
             title: 'Залучення користувачів в iGaming',
             subtitle: 'Масштабований performance-трафік',
-            image: case3,
+            image: case2,
             goal: 'Масштабування користувацького трафіку з контролем CPA та retention.',
             metrics: [
               { label: 'Витрачений бюджет', value: '$39000' },
