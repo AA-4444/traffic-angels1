@@ -307,7 +307,7 @@ export default function Header() {
                <img
                  src={logo}
                  alt="Volt logo"
-                 className="h-8 md:h-9 w-auto select-none"
+                 className="h-10 md:h-11 w-auto select-none"
                  draggable={false}
                />
              </Link>
