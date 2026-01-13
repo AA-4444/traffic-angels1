@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import MagneticButton from './MagneticButton';
 import { X } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -32,6 +32,19 @@ export default function Header() {
   const [isSending, setIsSending] = useState(false);
 
   const telegramLink = 'https://t.me/traffic_angelss';
+
+  // dropdown close on outside click
+  const langWrapRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const onDown = (e: MouseEvent) => {
+      if (!isLangOpen) return;
+      const el = langWrapRef.current;
+      if (el && !el.contains(e.target as Node)) setIsLangOpen(false);
+    };
+    window.addEventListener('mousedown', onDown);
+    return () => window.removeEventListener('mousedown', onDown);
+  }, [isLangOpen]);
 
   const t = useMemo(() => {
     const dict: Record<
@@ -67,12 +80,12 @@ export default function Header() {
     > = {
       EN: {
         nav: {
-         home: 'Home',
-         about: 'About',
-         services: 'Services',
-         work: 'Work',
-         steps: 'Process',
-         contact: 'Contact',
+          home: 'Home',
+          about: 'About',
+          services: 'Services',
+          work: 'Work',
+          steps: 'Process',
+          contact: 'Contact',
         },
         telegram: 'Telegram',
         getStarted: 'Get Started',
@@ -109,12 +122,12 @@ export default function Header() {
 
       RU: {
         nav: {
-         home: 'Главная',
-         about: 'О нас',
-         services: 'Услуги',
-         work: 'Кейсы',
-         steps: 'Процесс',
-         contact: 'Контакты',
+          home: 'Главная',
+          about: 'О нас',
+          services: 'Услуги',
+          work: 'Кейсы',
+          steps: 'Процесс',
+          contact: 'Контакты',
         },
         telegram: 'Telegram',
         getStarted: 'Начать',
@@ -131,14 +144,14 @@ export default function Header() {
 
           industryLabel: 'Ниша',
           industryPh: 'Выберите нишу',
-         industryOptions: [
-           { value: 'Forex/Investment', label: 'Forex/Investment' },
-           { value: 'Recovery/Charge Back', label: 'Recovery/Charge Back' },
-           { value: 'Igaming', label: 'Igaming' },
-           { value: 'Telegram Channels', label: 'Telegram Channels' },
-           { value: 'Crypto', label: 'Crypto' },
-           { value: 'Другое', label: 'Другое' },
-         ],
+          industryOptions: [
+            { value: 'Forex/Investment', label: 'Forex/Investment' },
+            { value: 'Recovery/Charge Back', label: 'Recovery/Charge Back' },
+            { value: 'Igaming', label: 'Igaming' },
+            { value: 'Telegram Channels', label: 'Telegram Channels' },
+            { value: 'Crypto', label: 'Crypto' },
+            { value: 'Другое', label: 'Другое' },
+          ],
 
           projectLabel: 'Задача',
           projectPh: 'Опишите задачу (запуск, воронки, трафик, масштабирование и т.д.)',
@@ -173,14 +186,14 @@ export default function Header() {
 
           industryLabel: 'Ніша',
           industryPh: 'Оберіть нішу',
-         industryOptions: [
-           { value: 'Forex/Investment', label: 'Forex/Investment' },
-           { value: 'Recovery/Charge Back', label: 'Recovery/Charge Back' },
-           { value: 'Igaming', label: 'Igaming' },
-           { value: 'Telegram Channels', label: 'Telegram Channels' },
-           { value: 'Crypto', label: 'Crypto' },
-           { value: 'Інше', label: 'Інше' },
-         ],
+          industryOptions: [
+            { value: 'Forex/Investment', label: 'Forex/Investment' },
+            { value: 'Recovery/Charge Back', label: 'Recovery/Charge Back' },
+            { value: 'Igaming', label: 'Igaming' },
+            { value: 'Telegram Channels', label: 'Telegram Channels' },
+            { value: 'Crypto', label: 'Crypto' },
+            { value: 'Інше', label: 'Інше' },
+          ],
 
           projectLabel: 'Задача',
           projectPh: 'Опишіть задачу (запуск, воронки, трафік, масштабування тощо)',
@@ -200,27 +213,36 @@ export default function Header() {
       services: '#services',
       work: '#work',
       about: '#about',
-      news: '/news',
       steps: '#steps',
       contact: '#contact',
+      home: '#home',
     }),
     []
   );
 
+  // pills
   const hoverPill =
-    'rounded-full px-5 h-12 inline-flex items-center font-semibold text-base text-foreground/80 transition-colors duration-200 hover:bg-black hover:text-primary';
+    'rounded-full h-12 inline-flex items-center whitespace-nowrap font-semibold transition-colors duration-200 hover:bg-black hover:text-primary ' +
+    'px-5 text-base text-foreground/80 ' +
+    'xl:px-3 xl:text-sm ' +
+    'lg:px-4 lg:text-[15px]';
 
   const rightBtnBase =
-    'rounded-full h-12 inline-flex items-center justify-center font-semibold text-base transition-colors duration-200';
+    'rounded-full h-12 inline-flex items-center justify-center font-semibold transition-colors duration-200 ' +
+    'text-base ' +
+    'xl:text-sm lg:text-[15px]';
 
   const langBtn =
-    `${rightBtnBase} px-3 min-w-[56px] border border-black text-black bg-transparent hover:bg-black hover:text-primary`;
+    `${rightBtnBase} px-3 min-w-[56px] border border-black text-black bg-transparent hover:bg-black hover:text-primary ` +
+    `xl:px-2 xl:min-w-[52px]`;
 
   const tgBtn =
-    `${rightBtnBase} px-6 border border-black text-black bg-transparent hover:bg-black hover:text-primary`;
+    `${rightBtnBase} px-6 border border-black text-black bg-transparent hover:bg-black hover:text-primary ` +
+    `xl:px-4 lg:px-5`;
 
   const getStartedBtn =
-    `${rightBtnBase} px-6 bg-primary text-primary-foreground hover:bg-black hover:text-primary`;
+    `${rightBtnBase} px-6 bg-primary text-primary-foreground hover:bg-black hover:text-primary ` +
+    `xl:px-4 lg:px-5`;
 
   const openLead = () => {
     setIsMenuOpen(false);
@@ -233,7 +255,6 @@ export default function Header() {
     const handler = () => openLead();
     window.addEventListener('volt:open-lead', handler as EventListener);
     return () => window.removeEventListener('volt:open-lead', handler as EventListener);
-   
   }, []);
 
   const setLanguage = (v: Lang) => {
@@ -293,71 +314,64 @@ export default function Header() {
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       >
         <div className="border-b border-border">
-          <div className="container mx-auto px-4 md:px-6 h-20 flex items-center justify-between">
-            <div className="lg:hidden w-12" />
-
-           <MagneticButton
-             as="div"
-             className="flex items-center gap-2 lg:absolute lg:left-1/2 lg:-translate-x-1/2"
-           >
-             <Link
-               to="/"
-               className="px-4 py-2 rounded-lg flex items-center justify-center bg-primary"
-             >
-               <img
-                 src={logo}
-                 alt="Volt logo"
-                 className="h-10 md:h-11 w-auto select-none"
-                 draggable={false}
-               />
-             </Link>
-           </MagneticButton>
-
-            <nav className="hidden lg:flex items-center gap-3">
-              {navIds.map((id) => {
-                if (id === 'news') {
-                  return (
-                    <MagneticButton key={id} as="div" className={hoverPill}>
-                      <Link to="/news" className="block">
-                        {t.nav.news}
-                      </Link>
-                    </MagneticButton>
-                  );
-                }
-
-                return (
-                  <MagneticButton key={id} as="div" className={hoverPill} onClick={() => goToSection(hrefMap[id])}>
+          <div className="mx-auto max-w-[1920px] px-6 md:px-10 h-20 grid grid-cols-3 items-center">
+            {/* LEFT (Desktop nav only on XL+) */}
+            <div className="flex items-center gap-3">
+              <nav className="hidden xl:flex items-center gap-3">
+                {navIds.map((id) => (
+                  <MagneticButton
+                    key={id}
+                    as="div"
+                    className={hoverPill}
+                    onClick={() => goToSection(hrefMap[id])}
+                  >
                     <span>{t.nav[id]}</span>
                   </MagneticButton>
-                );
-              })}
-            </nav>
+                ))}
+              </nav>
+            </div>
 
-            <div className="flex items-center gap-3">
-              <div className="hidden sm:block relative">
+            {/* CENTER LOGO */}
+            <div className="flex justify-center">
+              <MagneticButton as="div">
+                <Link to="/" className="px-4 py-2 rounded-lg flex items-center justify-center bg-primary">
+                  <img
+                    src={logo}
+                    alt="Volt logo"
+                    className="h-10 md:h-11 w-auto select-none"
+                    draggable={false}
+                  />
+                </Link>
+              </MagneticButton>
+            </div>
+
+            {/* RIGHT */}
+            <div className="flex justify-end items-center gap-3 xl:gap-2">
+              {/* Desktop controls ONLY on XL+ */}
+              <div ref={langWrapRef} className="hidden xl:block relative">
                 <button
                   type="button"
                   className={langBtn}
                   onClick={() => setIsLangOpen((v) => !v)}
-                  aria-label="Language"
                 >
-                  <span className="font-mono text-sm leading-none">{lang}</span>
+                  <span className="font-mono text-sm">{lang}</span>
                 </button>
 
                 <AnimatePresence>
                   {isLangOpen && (
                     <motion.div
-                      className="absolute right-0 mt-2 w-28 rounded-2xl border border-border bg-white shadow-xl overflow-hidden"
-                      initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                      initial={{ opacity: 0, y: 10, scale: 0.98 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 8, scale: 0.98 }}
-                      transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                      exit={{ opacity: 0, y: 10, scale: 0.98 }}
+                      transition={{ duration: 0.16 }}
+                      className="absolute right-0 mt-2 w-[140px] rounded-2xl border border-black bg-[hsl(var(--light))] shadow-xl overflow-hidden z-[999]"
                     >
                       {(['EN', 'RU', 'UA'] as const).map((v) => (
                         <button
                           key={v}
+                          type="button"
                           onClick={() => setLanguage(v)}
-                          className="w-full text-left px-4 py-3 font-mono text-sm hover:bg-black hover:text-primary transition-colors"
+                          className="w-full h-11 px-4 text-left font-mono text-sm text-black hover:bg-black hover:text-primary transition-colors"
                         >
                           {v}
                         </button>
@@ -367,47 +381,35 @@ export default function Header() {
                 </AnimatePresence>
               </div>
 
-              <MagneticButton as="div" className="hidden sm:block">
+              <MagneticButton as="div" className="hidden xl:block">
                 <a className={`${tgBtn} gap-2`} href={telegramLink} target="_blank" rel="noreferrer">
                   <span>{t.telegram}</span>
-                  <TelegramIcon className="w-5 h-5" />
+                  <TelegramIcon />
                 </a>
               </MagneticButton>
 
-              <MagneticButton as="div" className="hidden sm:block" onClick={openLead}>
+              <MagneticButton as="div" className="hidden xl:block" onClick={openLead}>
                 <span className={getStartedBtn}>{t.getStarted}</span>
               </MagneticButton>
 
+              {/* Mobile burger (now active BELOW XL) */}
               <button
                 onClick={() => setIsMenuOpen((v) => !v)}
-                className="lg:hidden flex flex-col gap-1.5 p-3 -mr-2"
-                aria-label="Toggle menu"
+                className="xl:hidden p-3 text-3xl leading-none"
+                aria-label="Open menu"
               >
-                <motion.span
-                  className="w-6 h-0.5 bg-foreground rounded-full block"
-                  animate={isMenuOpen ? { rotate: 45, y: 7 } : { rotate: 0, y: 0 }}
-                  transition={{ duration: 0.3 }}
-                />
-                <motion.span
-                  className="w-5 h-0.5 bg-foreground/60 rounded-full block"
-                  animate={isMenuOpen ? { opacity: 0 } : { opacity: 1 }}
-                  transition={{ duration: 0.3 }}
-                />
-                <motion.span
-                  className="w-6 h-0.5 bg-foreground rounded-full block"
-                  animate={isMenuOpen ? { rotate: -45, y: -7 } : { rotate: 0, y: 0 }}
-                  transition={{ duration: 0.3 }}
-                />
+                ☰
               </button>
             </div>
           </div>
         </div>
       </motion.header>
 
+      {/* MOBILE / TABLET MENU (below XL) */}
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
-            className="fixed inset-0 z-40 lg:hidden"
+            className="fixed inset-0 z-40 xl:hidden"
             style={{ backgroundColor: 'hsl(var(--dark))' }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -426,42 +428,20 @@ export default function Header() {
             </button>
 
             <nav className="h-full pt-24 px-6 flex flex-col gap-3">
-              {navIds.map((id, index) => {
-                if (id === 'news') {
-                  return (
-                    <motion.div
-                      key={id}
-                      initial={{ opacity: 0, y: 14 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 14 }}
-                      transition={{ duration: 0.22, delay: index * 0.04 }}
-                    >
-                      <Link
-                        to="/news"
-                        onClick={() => setIsMenuOpen(false)}
-                        className="block w-full rounded-2xl px-5 py-4 text-xl font-display font-semibold text-white/80 hover:bg-black hover:text-primary transition-colors"
-                      >
-                        {t.nav.news}
-                      </Link>
-                    </motion.div>
-                  );
-                }
-
-                return (
-                  <motion.button
-                    key={id}
-                    type="button"
-                    onClick={() => goToSection(hrefMap[id])}
-                    className="w-full text-left rounded-2xl px-5 py-4 text-xl font-display font-semibold text-white/80 hover:bg-black hover:text-primary transition-colors"
-                    initial={{ opacity: 0, y: 14 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 14 }}
-                    transition={{ duration: 0.22, delay: index * 0.04 }}
-                  >
-                    {t.nav[id]}
-                  </motion.button>
-                );
-              })}
+              {navIds.map((id, index) => (
+                <motion.button
+                  key={id}
+                  type="button"
+                  onClick={() => goToSection(hrefMap[id])}
+                  className="w-full text-left rounded-2xl px-5 py-4 text-xl font-display font-semibold text-white/80 hover:bg-black hover:text-primary transition-colors"
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 14 }}
+                  transition={{ duration: 0.22, delay: index * 0.04 }}
+                >
+                  {t.nav[id]}
+                </motion.button>
+              ))}
 
               <motion.div
                 className="mt-5 flex flex-col gap-3"
@@ -506,6 +486,7 @@ export default function Header() {
         )}
       </AnimatePresence>
 
+      {/* LEAD MODAL (unchanged) */}
       <AnimatePresence>
         {isLeadOpen && (
           <motion.div

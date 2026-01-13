@@ -4,7 +4,6 @@ import AnimatedText from './AnimatedText';
 
 type Lang = 'EN' | 'RU' | 'UA';
 
-// ⬇️ ONLY TRANSLATION (no style / layout changes)
 const stepsByLang: Record<
   Lang,
   {
@@ -17,95 +16,33 @@ const stepsByLang: Record<
     label: 'HOW WE WORK',
     h2: 'Our Process',
     steps: [
-      {
-        number: '01',
-        title: 'Analytics',
-        description: 'We analyze the niche, offer, traffic sources, and moderation risks.',
-      },
-      {
-        number: '02',
-        title: 'Strategy',
-        description: 'We build a traffic strategy with KPIs, funnels, and a scaling logic.',
-      },
-      {
-        number: '03',
-        title: 'Creation',
-        description: 'We create creatives, funnels, and the tracking system.',
-      },
-      {
-        number: '04',
-        title: 'Launch',
-        description: 'We launch campaigns with precise targeting and constant control.',
-      },
-      {
-        number: '05',
-        title: 'Optimization',
-        description: 'We improve performance, cut what doesn’t work, and scale what’s profitable.',
-      },
+      { number: '01', title: 'Analytics', description: 'We analyze the niche, offer, traffic sources, and moderation risks.' },
+      { number: '02', title: 'Strategy', description: 'We build a traffic strategy with KPIs, funnels, and a scaling logic.' },
+      { number: '03', title: 'Creation', description: 'We create creatives, funnels, and the tracking system.' },
+      { number: '04', title: 'Launch', description: 'We launch campaigns with precise targeting and constant control.' },
+      { number: '05', title: 'Optimization', description: 'We improve performance, cut what doesn’t work, and scale what’s profitable.' },
     ] as const,
   },
-
   RU: {
     label: 'КАК МЫ РАБОТАЕМ',
     h2: 'Наш процесс',
     steps: [
-      {
-        number: '01',
-        title: 'Аналитика',
-        description: 'Изучаем нишу, оффер, источники трафика и риски модерации.',
-      },
-      {
-        number: '02',
-        title: 'Стратегия',
-        description: 'Формируем трафик-стратегию с KPI, воронками и логикой масштабирования.',
-      },
-      {
-        number: '03',
-        title: 'Создание',
-        description: 'Разрабатываем креативы, воронки и систему трекинга.',
-      },
-      {
-        number: '04',
-        title: 'Запуск',
-        description: 'Запускаем кампании с точным таргетингом и постоянным контролем.',
-      },
-      {
-        number: '05',
-        title: 'Оптимизация',
-        description: 'Улучшаем показатели, отключаем неэффективное, масштабируем прибыльное.',
-      },
+      { number: '01', title: 'Аналитика', description: 'Изучаем нишу, оффер, источники трафика и риски модерации.' },
+      { number: '02', title: 'Стратегия', description: 'Формируем трафик-стратегию с KPI, воронками и логикой масштабирования.' },
+      { number: '03', title: 'Создание', description: 'Разрабатываем креативы, воронки и систему трекинга.' },
+      { number: '04', title: 'Запуск', description: 'Запускаем кампании с точным таргетингом и постоянным контролем.' },
+      { number: '05', title: 'Оптимизация', description: 'Улучшаем показатели, отключаем неэффективное, масштабируем прибыльное.' },
     ] as const,
   },
-
   UA: {
     label: 'ЯК МИ ПРАЦЮЄМО',
     h2: 'Наш процес',
     steps: [
-      {
-        number: '01',
-        title: 'Аналітика',
-        description: 'Вивчаємо нішу, оффер, джерела трафіку та ризики модерації.',
-      },
-      {
-        number: '02',
-        title: 'Стратегія',
-        description: 'Формуємо трафік-стратегію з KPI, воронками та логікою масштабування.',
-      },
-      {
-        number: '03',
-        title: 'Створення',
-        description: 'Розробляємо креативи, воронки та систему трекінгу.',
-      },
-      {
-        number: '04',
-        title: 'Запуск',
-        description: 'Запускаємо кампанії з точним таргетингом і постійним контролем.',
-      },
-      {
-        number: '05',
-        title: 'Оптимізація',
-        description: 'Покращуємо показники, вимикаємо неефективне, масштабуємо прибуткове.',
-      },
+      { number: '01', title: 'Аналітика', description: 'Вивчаємо нішу, оффер, джерела трафіку та ризики модерації.' },
+      { number: '02', title: 'Стратегія', description: 'Формуємо трафік-стратегію з KPI, воронками та логікою масштабування.' },
+      { number: '03', title: 'Створення', description: 'Розробляємо креативи, воронки та систему трекінгу.' },
+      { number: '04', title: 'Запуск', description: 'Запускаємо кампанії з точним таргетингом і постійним контролем.' },
+      { number: '05', title: 'Оптимізація', description: 'Покращуємо показники, вимикаємо неефективне, масштабуємо прибуткове.' },
     ] as const,
   },
 };
@@ -118,9 +55,10 @@ const themes = [
   { bg: 'bg-[#FF4D6D]', text: 'text-black', border: 'border-black/15' },
 ] as const;
 
-const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 type Step = (typeof stepsByLang)['EN']['steps'][number];
 type Theme = (typeof themes)[number];
+
+const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 
 function CardInner({ i, step, theme, total }: { i: number; step: Step; theme: Theme; total: number }) {
   return (
@@ -192,7 +130,9 @@ function CardInner({ i, step, theme, total }: { i: number; step: Step; theme: Th
   );
 }
 
-function ProcessCard({
+
+// DESKTOP 
+function ProcessCardDesktop({
   i,
   step,
   theme,
@@ -202,6 +142,7 @@ function ProcessCard({
   baseHiddenY,
   enterFrac,
   springCfg,
+  cardSize,
 }: {
   i: number;
   step: Step;
@@ -212,6 +153,7 @@ function ProcessCard({
   baseHiddenY: number;
   enterFrac: number;
   springCfg: { damping: number; stiffness: number; mass: number };
+  cardSize: { width: string; height: string };
 }) {
   const slot = 1 / total;
   const start = clamp(i * slot);
@@ -229,8 +171,8 @@ function ProcessCard({
       className="absolute"
       style={{
         zIndex: 10 + i,
-        width: window.innerWidth < 768 ? '92vmin' : 'min(72vmin, 740px)',
-        height: window.innerWidth < 768 ? '92vmin' : 'min(72vmin, 740px)',
+        width: cardSize.width,
+        height: cardSize.height,
         y,
         opacity: 1,
         rotate: 0,
@@ -242,29 +184,28 @@ function ProcessCard({
   );
 }
 
-const ProcessSection = () => {
+function DesktopProcessSection({ lang }: { lang: Lang }) {
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollY } = useScroll();
 
-  const [lang, setLang] = useState<Lang>(() => (localStorage.getItem('volt_lang') as Lang) ?? 'EN');
-
-  useEffect(() => {
-    const onLang = (e: Event) => {
-      const ce = e as CustomEvent<{ lang: Lang }>;
-      if (ce.detail?.lang) setLang(ce.detail.lang);
-    };
-    window.addEventListener('volt:lang', onLang as EventListener);
-    return () => window.removeEventListener('volt:lang', onLang as EventListener);
-  }, []);
-
   const steps = stepsByLang[lang].steps;
-
   const total = steps.length;
-
   const { label, h2 } = stepsByLang[lang];
 
   const [range, setRange] = useState({ start: 0, endCards: 1 });
   const [sectionPx, setSectionPx] = useState<number>(total * 1000);
+
+  // card size based on current viewport (desktop only)
+  const [isMd, setIsMd] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return true;
+    return window.innerWidth >= 768;
+  });
+
+  useEffect(() => {
+    const onResize = () => setIsMd(window.innerWidth >= 768);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
 
   useEffect(() => {
     const measure = () => {
@@ -300,9 +241,16 @@ const ProcessSection = () => {
   const enterFrac = 0.68;
   const springCfg = { damping: 34, stiffness: 95, mass: 1.05 };
 
-  const spacerPx = useMemo(() => Math.max(1, sectionPx - window.innerHeight), [sectionPx]);
+  const spacerPx = useMemo(() => Math.max(1, sectionPx - (typeof window !== 'undefined' ? window.innerHeight : 1)), [sectionPx]);
+  const stageLift = isMd ? 80 : 180;
 
-  const stageLift = window.innerWidth < 768 ? 180 : 80;
+  const cardSize = useMemo(
+    () => ({
+      width: isMd ? 'min(72vmin, 740px)' : '92vmin',
+      height: isMd ? 'min(72vmin, 740px)' : '92vmin',
+    }),
+    [isMd]
+  );
 
   return (
     <section ref={sectionRef} className="relative bg-black" style={{ height: sectionPx }} key={lang}>
@@ -328,7 +276,7 @@ const ProcessSection = () => {
           }}
         >
           {steps.map((step, i) => (
-            <ProcessCard
+            <ProcessCardDesktop
               key={step.number}
               i={i}
               step={step}
@@ -339,6 +287,7 @@ const ProcessSection = () => {
               baseHiddenY={baseHiddenY}
               enterFrac={enterFrac}
               springCfg={springCfg}
+              cardSize={cardSize}
             />
           ))}
         </div>
@@ -347,6 +296,97 @@ const ProcessSection = () => {
       <div style={{ height: spacerPx }} />
     </section>
   );
+}
+
+
+// MOBILE 
+function MobileProcessSection({ lang }: { lang: Lang }) {
+  const steps = stepsByLang[lang].steps;
+  const total = steps.length;
+  const { label, h2 } = stepsByLang[lang];
+
+  return (
+    <section className="relative bg-black py-20" key={lang}>
+      {/* Header (обычный, не sticky) */}
+      <div className="container mx-auto px-6 text-center">
+        <span className="text-volt text-sm font-mono uppercase tracking-widest">{label}</span>
+        <AnimatedText
+          text={h2}
+          className="text-4xl font-display font-bold mt-4 text-white"
+          delay={0.2}
+        />
+      </div>
+
+      {/* Cards column */}
+      <div className="container mx-auto px-6 mt-12 space-y-6">
+        {steps.map((step, i) => (
+          <motion.div
+            key={step.number}
+            initial={{ opacity: 0, y: 60, filter: 'blur(6px)' }}
+            whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            viewport={{ amount: 0.35, once: false }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: i * 0.06 }}
+            className="w-full"
+          >
+            
+            <div className="w-full">
+              <div className="w-full h-auto">
+                <div className="w-full">
+                 
+                  <div className="w-full">
+                    <div className="w-full min-h-[320px]">
+                      <CardInner i={i} step={step} theme={themes[i % themes.length]} total={total} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+
+const ProcessSection = () => {
+  const [lang, setLang] = useState<Lang>(() => (localStorage.getItem('volt_lang') as Lang) ?? 'EN');
+  const [isMobile, setIsMobile] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia('(max-width: 767px)').matches;
+  });
+
+  useEffect(() => {
+    const onLang = (e: Event) => {
+      const ce = e as CustomEvent<{ lang: Lang }>;
+      if (ce.detail?.lang) setLang(ce.detail.lang);
+    };
+    window.addEventListener('volt:lang', onLang as EventListener);
+    return () => window.removeEventListener('volt:lang', onLang as EventListener);
+  }, []);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)');
+    const onChange = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+
+    // init
+    setIsMobile(mq.matches);
+
+    // subscribe
+    if (mq.addEventListener) mq.addEventListener('change', onChange);
+    else mq.addListener(onChange);
+
+    return () => {
+      if (mq.removeEventListener) mq.removeEventListener('change', onChange);
+      else mq.removeListener(onChange);
+    };
+  }, []);
+
+  
+  if (!isMobile) return <DesktopProcessSection lang={lang} />;
+
+ 
+  return <MobileProcessSection lang={lang} />;
 };
 
 export default ProcessSection;

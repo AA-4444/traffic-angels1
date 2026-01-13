@@ -1,23 +1,23 @@
-import { motion } from 'framer-motion';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import bgVideo from '@/assets/bg1.mp4';
+import { motion } from "framer-motion";
+import { useEffect, useMemo, useRef, useState } from "react";
+import bgVideo from "@/assets/bg1.mp4";
 
-type Lang = 'EN' | 'RU' | 'UA';
+type Lang = "EN" | "RU" | "UA";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 const lineVariants = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.12, delayChildren: 0.15 } }, // было 0.06
+  visible: { transition: { staggerChildren: 0.12, delayChildren: 0.15 } },
 };
 
 const wordVariants = {
-  hidden: { y: '110%', opacity: 0, filter: 'blur(6px)' },
+  hidden: { y: "110%", opacity: 0, filter: "blur(6px)" },
   visible: {
-    y: '0%',
+    y: "0%",
     opacity: 1,
-    filter: 'blur(0px)',
-    transition: { duration: 1.25, ease: EASE }, // было 0.85
+    filter: "blur(0px)",
+    transition: { duration: 1.25, ease: EASE },
   },
 };
 
@@ -36,8 +36,8 @@ function AnimatedLine({ text }: { text: string }) {
         [overflow-wrap:normal]
       "
       style={{
-        color: 'hsl(var(--volt))',
-        fontSize: 'clamp(2.8rem, 9vw, 7rem)', // ✅ твой размер
+        color: "hsl(var(--volt))",
+        fontSize: "clamp(2.8rem, 9vw, 7rem)",
       }}
       variants={lineVariants}
       initial="hidden"
@@ -45,15 +45,13 @@ function AnimatedLine({ text }: { text: string }) {
     >
       {words.map((w, i) => (
         <span key={`${w}-${i}`} className="inline-flex overflow-hidden">
-          {/* ✅ слово цельное, внутри не переносится */}
           <motion.span variants={wordVariants} className="inline-block whitespace-nowrap">
             {w}
           </motion.span>
 
-          {/* пробел между словами */}
           {i !== words.length - 1 ? (
             <span className="inline-block w-[0.24em]" aria-hidden="true">
-              {' '}
+              {" "}
             </span>
           ) : null}
         </span>
@@ -64,7 +62,9 @@ function AnimatedLine({ text }: { text: string }) {
 
 export default function Hero3D() {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [lang, setLang] = useState<Lang>(() => (localStorage.getItem('volt_lang') as Lang) ?? 'EN');
+  const [lang, setLang] = useState<Lang>(
+    () => (localStorage.getItem("volt_lang") as Lang) ?? "EN"
+  );
 
   useEffect(() => {
     if (videoRef.current) videoRef.current.playbackRate = 0.7;
@@ -75,38 +75,36 @@ export default function Hero3D() {
       const ce = e as CustomEvent<{ lang: Lang }>;
       if (ce.detail?.lang) setLang(ce.detail.lang);
     };
-    window.addEventListener('volt:lang', onLang as EventListener);
-    return () => window.removeEventListener('volt:lang', onLang as EventListener);
+    window.addEventListener("volt:lang", onLang as EventListener);
+    return () => window.removeEventListener("volt:lang", onLang as EventListener);
   }, []);
 
   const copy = useMemo(() => {
     const dict: Record<Lang, { lines: string[]; contact: string; start: string }> = {
       EN: {
-        // ✅ "PROFITABLE TRAFFIC" вместе
-        lines: ['WE DRIVE', 'PROFITABLE TRAFFIC', 'TO GREY MARKETS'],
-        contact: 'Contact',
-        start: 'Get Started',
+        lines: ["WE DRIVE", "PROFITABLE TRAFFIC", "TO GREY MARKETS"],
+        contact: "Contact",
+        start: "Get Started",
       },
       RU: {
-        // ✅ русский не меняем
-        lines: ['МЫ ПРИВОДИМ ПРИБЫЛЬНЫЙ ТРАФИК', 'В СЕРЫЕ НИШИ'],
-        contact: 'Контакты',
-        start: 'Начать',
+        lines: ["МЫ ПРИВОДИМ ПРИБЫЛЬНЫЙ ТРАФИК", "В СЕРЫЕ НИШИ"],
+        contact: "Контакты",
+        start: "Начать",
       },
       UA: {
-        // ✅ "ТРАФІК У СІРІ НІШІ" вместе
-        lines: ['МИ ПРИВОДИМО ПРИБУТКОВИЙ', 'ТРАФІК У СІРІ НІШІ'],
-        contact: 'Контакти',
-        start: 'Почати',
+        lines: ["МИ ПРИВОДИМО ПРИБУТКОВИЙ", "ТРАФІК У СІРІ НІШІ"],
+        contact: "Контакти",
+        start: "Почати",
       },
     };
     return dict[lang];
   }, [lang]);
 
-  const openLead = () => window.dispatchEvent(new CustomEvent('volt:open-lead'));
+  const openLead = () => window.dispatchEvent(new CustomEvent("volt:open-lead"));
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black">
+    <section className="relative min-h-screen overflow-hidden bg-black">
+      {/* VIDEO BG */}
       <video
         ref={videoRef}
         className="absolute inset-0 h-full w-full object-cover"
@@ -117,53 +115,62 @@ export default function Hero3D() {
         playsInline
         preload="auto"
       />
+
+      {/* overlay */}
       <div className="absolute inset-0 bg-black/50" />
 
-      <div className="relative z-20 text-center px-4 sm:px-6 translate-y-6 md:translate-y-10">
-        <div className="mx-auto max-w-[1100px] space-y-2">
-          {copy.lines.map((line, i) => (
-            <AnimatedLine key={`${lang}-${i}`} text={line} />
-          ))}
+      {/* CONTENT */}
+      <div className="relative z-20 mx-auto flex min-h-screen max-w-6xl flex-col px-6 pt-24 md:pt-28">
+        <div className="flex flex-1 items-center justify-center">
+          <div className="w-full text-center translate-y-6 md:translate-y-10">
+            <div className="mx-auto max-w-[1100px] space-y-2">
+              {copy.lines.map((line, i) => (
+                <AnimatedLine key={`${lang}-${i}`} text={line} />
+              ))}
+            </div>
+          </div>
         </div>
 
-        <div className="mt-14 flex flex-col sm:flex-row items-center justify-center gap-5 sm:gap-6">
+        {/* CTA BAR */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.75 }}
+          className="relative z-30 -mx-6 mt-auto flex w-[calc(100%+48px)] flex-col md:flex-row"
+        >
+          {/* LEFT */}
           <a
             href="#contact"
             className="
-              h-[56px] sm:h-[72px]
-              w-[220px] sm:w-[260px] md:w-[320px]
-              inline-flex items-center justify-center
-              rounded-[18px] sm:rounded-[20px]
-              border-2 border-white/40
-              text-white
-              font-display font-bold
-              text-lg sm:text-xl md:text-2xl
-              transition-colors duration-300
-              hover:bg-black hover:text-[hsl(var(--volt))]
+              flex flex-1 items-center justify-center gap-4
+              bg-[hsl(var(--volt))] text-black
+              py-9 text-xl font-extrabold uppercase tracking-wider
+              transition-colors hover:bg-[hsl(var(--volt))]/90
+              rounded-tl-3xl rounded-tr-3xl
+              md:rounded-tl-3xl md:rounded-tr-3xl
+              md:py-10 md:text-2xl
             "
           >
             {copy.contact}
           </a>
 
+          {/* RIGHT (НЕ прозрачная) */}
           <button
             type="button"
             onClick={openLead}
             className="
-              h-[56px] sm:h-[72px]
-              w-[220px] sm:w-[260px] md:w-[320px]
-              inline-flex items-center justify-center
-              rounded-[18px] sm:rounded-[20px]
-              bg-[hsl(var(--volt))]
-              text-black
-              font-display font-bold
-              text-lg sm:text-xl md:text-2xl
-              transition-colors duration-300
-              hover:bg-black hover:text-[hsl(var(--volt))]
+              flex flex-1 items-center justify-center gap-4
+              bg-neutral-900 text-white
+              py-9 text-xl font-extrabold uppercase tracking-wider
+              transition-colors hover:bg-neutral-800
+              rounded-none
+              md:rounded-tl-3xl md:rounded-tr-3xl
+              md:py-10 md:text-2xl
             "
           >
             {copy.start}
           </button>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

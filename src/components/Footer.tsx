@@ -42,7 +42,7 @@ const Footer = () => {
     return () => window.removeEventListener('volt:lang', onLang as EventListener);
   }, []);
 
-  // ✅ один источник правды
+  
   const telegramLink = 'https://t.me/traffic_angelss';
 
   const copy = useMemo(() => {
@@ -80,7 +80,6 @@ const Footer = () => {
           { label: 'Services', href: '#services' },
           { label: 'Work', href: '#work' },
           { label: 'Steps', href: '#process' },
-          { label: 'News', href: '#news' },
           { label: 'Contact', href: '#contact' },
         ],
         connect: [{ label: 'Telegram', href: telegramLink }],
@@ -104,7 +103,6 @@ const Footer = () => {
           { label: 'Услуги', href: '#services' },
           { label: 'Кейсы', href: '#work' },
           { label: 'Этапы', href: '#process' },
-          { label: 'Новости', href: '#news' },
           { label: 'Контакт', href: '#contact' },
         ],
         connect: [{ label: 'Telegram', href: telegramLink }],
@@ -128,7 +126,6 @@ const Footer = () => {
           { label: 'Послуги', href: '#services' },
           { label: 'Кейси', href: '#work' },
           { label: 'Кроки', href: '#process' },
-          { label: 'Новини', href: '#news' },
           { label: 'Контакт', href: '#contact' },
         ],
         connect: [{ label: 'Telegram', href: telegramLink }],
