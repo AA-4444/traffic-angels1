@@ -584,79 +584,99 @@ export default function Header() {
             className="relative block rounded-2xl shadow-lg will-change-[height] overflow-hidden border border-black/10"
             style={{ backgroundColor: 'hsl(var(--light))', height: TOP_BAR_H }}
           >
-            {/* TOP BAR */}
-            <div
-              className="absolute inset-x-0 top-0 z-20 flex items-center justify-between"
-              style={{ height: TOP_BAR_H, padding: '0.7rem 0.9rem 0.7rem 1.2rem' }}
-            >
-              {/* LEFT: burger */}
-              <div
-                className="h-full flex flex-col items-center justify-center cursor-pointer gap-[7px] select-none"
-                onClick={toggleMenu}
-                role="button"
-                aria-label={isMenuExpanded ? 'Close menu' : 'Open menu'}
-                tabIndex={0}
-                style={{ color: '#000' }}
-              >
-                <div
-                  className="w-[30px] h-[2px] bg-current transition-transform duration-200"
-                  style={{
-                    transform: isHamburgerOpen ? 'translateY(4px) rotate(45deg)' : 'none',
-                    transformOrigin: '50% 50%',
-                    opacity: 0.95,
-                  }}
-                />
-                <div
-                  className="w-[30px] h-[2px] bg-current transition-transform duration-200"
-                  style={{
-                    transform: isHamburgerOpen ? 'translateY(-4px) rotate(-45deg)' : 'none',
-                    transformOrigin: '50% 50%',
-                    opacity: 0.95,
-                  }}
-                />
-              </div>
-
-              {/* CENTER: logo */}
-              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-                <MagneticButton as="div">
-                  <Link to="/" className="px-4 py-2 rounded-xl flex items-center justify-center bg-primary">
-                    <img
-                      src={logo}
-                      alt="Volt logo"
-                      className="h-10 md:h-11 w-auto select-none"
-                      draggable={false}
-                    />
-                  </Link>
-                </MagneticButton>
-              </div>
-
-              {/* RIGHT: controls (desktop in bar) */}
-              <div className="flex items-center gap-3">
-                {/* On small screens we hide them here and show inside menu */}
-                <div className="hidden md:flex items-center gap-3">
-                  <button
-                    ref={langBtnRef}
-                    type="button"
-                    className={langBtn}
-                    onClick={() => (isLangOpen ? setIsLangOpen(false) : openLang())}
-                  >
-                    <span className="font-mono text-sm">{lang}</span>
-                  </button>
-
-                  <MagneticButton as="div">
-                    <a className={`${tgBtn} gap-2`} href={telegramLink} target="_blank" rel="noreferrer">
-                      <span>{t.telegram}</span>
-                      <TelegramIcon />
-                    </a>
-                  </MagneticButton>
-
-                  <MagneticButton as="div" onClick={openLead}>
-                    <span className={getStartedBtn}>{t.getStarted}</span>
-                  </MagneticButton>
-                </div>
-              </div>
-            </div>
-
+         {/* TOP BAR */}
+         <div
+           className="absolute inset-x-0 top-0 z-20 flex items-center justify-between"
+           style={{ height: TOP_BAR_H, padding: '0.7rem 0.9rem 0.7rem 1.2rem' }}
+         >
+           {/* MOBILE RIGHT: burger */}
+           <div className="md:hidden ml-auto">
+             <div
+               className="h-full flex flex-col items-center justify-center cursor-pointer gap-[7px] select-none"
+               onClick={toggleMenu}
+               role="button"
+               aria-label={isMenuExpanded ? 'Close menu' : 'Open menu'}
+               tabIndex={0}
+               style={{ color: '#000' }}
+             >
+               <div
+                 className="w-[30px] h-[2px] bg-current transition-transform duration-200"
+                 style={{
+                   transform: isHamburgerOpen ? 'translateY(4px) rotate(45deg)' : 'none',
+                   transformOrigin: '50% 50%',
+                   opacity: 0.95,
+                 }}
+               />
+               <div
+                 className="w-[30px] h-[2px] bg-current transition-transform duration-200"
+                 style={{
+                   transform: isHamburgerOpen ? 'translateY(-4px) rotate(-45deg)' : 'none',
+                   transformOrigin: '50% 50%',
+                   opacity: 0.95,
+                 }}
+               />
+             </div>
+           </div>
+         
+           {/* DESKTOP LEFT: burger (как было) */}
+           <div
+             className="hidden md:flex h-full flex-col items-center justify-center cursor-pointer gap-[7px] select-none"
+             onClick={toggleMenu}
+             role="button"
+             aria-label={isMenuExpanded ? 'Close menu' : 'Open menu'}
+             tabIndex={0}
+             style={{ color: '#000' }}
+           >
+             <div
+               className="w-[30px] h-[2px] bg-current transition-transform duration-200"
+               style={{
+                 transform: isHamburgerOpen ? 'translateY(4px) rotate(45deg)' : 'none',
+                 transformOrigin: '50% 50%',
+                 opacity: 0.95,
+               }}
+             />
+             <div
+               className="w-[30px] h-[2px] bg-current transition-transform duration-200"
+               style={{
+                 transform: isHamburgerOpen ? 'translateY(-4px) rotate(-45deg)' : 'none',
+                 transformOrigin: '50% 50%',
+                 opacity: 0.95,
+               }}
+             />
+           </div>
+         
+           {/* CENTER: logo */}
+           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+             <MagneticButton as="div">
+               <Link to="/" className="px-4 py-2 rounded-xl flex items-center justify-center bg-primary">
+                 <img src={logo} alt="Volt logo" className="h-10 md:h-11 w-auto select-none" draggable={false} />
+               </Link>
+             </MagneticButton>
+           </div>
+         
+           {/* RIGHT: controls (desktop only) */}
+           <div className="hidden md:flex items-center gap-3">
+             <button
+               ref={langBtnRef}
+               type="button"
+               className={langBtn}
+               onClick={() => (isLangOpen ? setIsLangOpen(false) : openLang())}
+             >
+               <span className="font-mono text-sm">{lang}</span>
+             </button>
+         
+             <MagneticButton as="div">
+               <a className={`${tgBtn} gap-2`} href={telegramLink} target="_blank" rel="noreferrer">
+                 <span>{t.telegram}</span>
+                 <TelegramIcon />
+               </a>
+             </MagneticButton>
+         
+             <MagneticButton as="div" onClick={openLead}>
+               <span className={getStartedBtn}>{t.getStarted}</span>
+             </MagneticButton>
+           </div>
+         </div>
             {/* CONTENT (cards) */}
             <div
               data-cardnav-content="1"
