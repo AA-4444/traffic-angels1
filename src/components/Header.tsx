@@ -1,8 +1,9 @@
-import { motion, AnimatePresence } from 'framer-motion';
-import { useEffect, useMemo, useState, useRef } from 'react';
-import MagneticButton from './MagneticButton';
-import { X } from 'lucide-react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { gsap } from 'gsap';
+import { motion } from 'framer-motion';
+import { createPortal } from 'react-dom';
+import MagneticButton from './MagneticButton';
 import logo from '@/assets/logo.svg';
 
 type Lang = 'EN' | 'RU' | 'UA';
@@ -19,32 +20,47 @@ const TelegramIcon = ({ className = 'w-5 h-5' }: { className?: string }) => (
   </svg>
 );
 
+function useOutsideClick(ref: React.RefObject<HTMLElement>, isOpen: boolean, onClose: () => void) {
+  useEffect(() => {
+    const onDown = (e: MouseEvent) => {
+      if (!isOpen) return;
+      const el = ref.current;
+      if (el && !el.contains(e.target as Node)) onClose();
+    };
+    window.addEventListener('mousedown', onDown);
+    return () => window.removeEventListener('mousedown', onDown);
+  }, [isOpen, onClose, ref]);
+}
+
 export default function Header() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  // ======= existing state =======
   const [isLeadOpen, setIsLeadOpen] = useState(false);
-
-  const [lang, setLang] = useState<Lang>(() => (localStorage.getItem('volt_lang') as Lang) || 'EN');
-  const [isLangOpen, setIsLangOpen] = useState(false);
-
   const [isSending, setIsSending] = useState(false);
 
+  const [lang, setLang] = useState<Lang>(() => (localStorage.getItem('volt_lang') as Lang) || 'EN');
+
+  // dropdown (portal) state
+  const [isLangOpen, setIsLangOpen] = useState(false);
+  const langBtnRef = useRef<HTMLButtonElement | null>(null);
+  const langPortalRef = useRef<HTMLDivElement | null>(null);
+  const [langPos, setLangPos] = useState<{ top: number; left: number; width: number }>({
+    top: 0,
+    left: 0,
+    width: 140,
+  });
+
+  // ======= CardNav-like menu state =======
+  const [isMenuExpanded, setIsMenuExpanded] = useState(false);
+  const [isHamburgerOpen, setIsHamburgerOpen] = useState(false);
+
+  const navRef = useRef<HTMLElement | null>(null);
+  const cardsRef = useRef<Array<HTMLDivElement | null>>([]);
+  const tlRef = useRef<gsap.core.Timeline | null>(null);
+
   const telegramLink = 'https://t.me/traffic_angelss';
-
-  // dropdown close on outside click
-  const langWrapRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const onDown = (e: MouseEvent) => {
-      if (!isLangOpen) return;
-      const el = langWrapRef.current;
-      if (el && !el.contains(e.target as Node)) setIsLangOpen(false);
-    };
-    window.addEventListener('mousedown', onDown);
-    return () => window.removeEventListener('mousedown', onDown);
-  }, [isLangOpen]);
 
   const t = useMemo(() => {
     const dict: Record<
@@ -53,7 +69,14 @@ export default function Header() {
         nav: Record<NavId, string>;
         telegram: string;
         getStarted: string;
-
+        menu: {
+          label1: string;
+          label2: string;
+          label3: string;
+          links1: { id: NavId; label: string }[];
+          links2: { id: NavId; label: string }[];
+          links3: { id: NavId; label: string }[];
+        };
         lead: {
           kicker: string;
           title: string;
@@ -89,6 +112,24 @@ export default function Header() {
         },
         telegram: 'Telegram',
         getStarted: 'Get Started',
+        menu: {
+          label1: 'Explore',
+          label2: 'Work',
+          label3: 'Contact',
+          links1: [
+            { id: 'home', label: 'Home' },
+            { id: 'about', label: 'About' },
+            { id: 'services', label: 'Services' },
+          ],
+          links2: [
+            { id: 'work', label: 'Cases' },
+            { id: 'steps', label: 'Process' },
+          ],
+          links3: [
+            { id: 'contact', label: 'Contacts' },
+            { id: 'contact', label: 'Book a call' },
+          ],
+        },
         lead: {
           kicker: `Let’s build something`,
           title: 'Get Started',
@@ -131,6 +172,24 @@ export default function Header() {
         },
         telegram: 'Telegram',
         getStarted: 'Начать',
+        menu: {
+          label1: 'Навигация',
+          label2: 'Кейсы',
+          label3: 'Связь',
+          links1: [
+            { id: 'home', label: 'Главная' },
+            { id: 'about', label: 'О нас' },
+            { id: 'services', label: 'Услуги' },
+          ],
+          links2: [
+            { id: 'work', label: 'Кейсы' },
+            { id: 'steps', label: 'Процесс' },
+          ],
+          links3: [
+            { id: 'contact', label: 'Контакты' },
+            { id: 'contact', label: 'Созвон' },
+          ],
+        },
         lead: {
           kicker: 'Давайте строить',
           title: 'Начать',
@@ -173,6 +232,24 @@ export default function Header() {
         },
         telegram: 'Telegram',
         getStarted: 'Почати',
+        menu: {
+          label1: 'Навігація',
+          label2: 'Кейси',
+          label3: "Звʼязок",
+          links1: [
+            { id: 'home', label: 'Головна' },
+            { id: 'about', label: 'Про нас' },
+            { id: 'services', label: 'Послуги' },
+          ],
+          links2: [
+            { id: 'work', label: 'Кейси' },
+            { id: 'steps', label: 'Процес' },
+          ],
+          links3: [
+            { id: 'contact', label: 'Контакти' },
+            { id: 'contact', label: 'Дзвінок' },
+          ],
+        },
         lead: {
           kicker: 'Будуємо разом',
           title: 'Почати',
@@ -220,16 +297,9 @@ export default function Header() {
     []
   );
 
-  // pills
-  const hoverPill =
-    'rounded-full h-12 inline-flex items-center whitespace-nowrap font-semibold transition-colors duration-200 hover:bg-black hover:text-primary ' +
-    'px-5 text-base text-foreground/80 ' +
-    'xl:px-3 xl:text-sm ' +
-    'lg:px-4 lg:text-[15px]';
-
+  // ====== your button styles (kept) ======
   const rightBtnBase =
-    'rounded-full h-12 inline-flex items-center justify-center font-semibold transition-colors duration-200 ' +
-    'text-base ' +
+    'rounded-full h-12 inline-flex items-center justify-center font-semibold transition-colors duration-200 text-base ' +
     'xl:text-sm lg:text-[15px]';
 
   const langBtn =
@@ -244,19 +314,6 @@ export default function Header() {
     `${rightBtnBase} px-6 bg-primary text-primary-foreground hover:bg-black hover:text-primary ` +
     `xl:px-4 lg:px-5`;
 
-  const openLead = () => {
-    setIsMenuOpen(false);
-    setIsLangOpen(false);
-    setIsLeadOpen(true);
-  };
-  const closeLead = () => setIsLeadOpen(false);
-
-  useEffect(() => {
-    const handler = () => openLead();
-    window.addEventListener('volt:open-lead', handler as EventListener);
-    return () => window.removeEventListener('volt:open-lead', handler as EventListener);
-  }, []);
-
   const setLanguage = (v: Lang) => {
     setLang(v);
     setIsLangOpen(false);
@@ -264,19 +321,25 @@ export default function Header() {
     window.dispatchEvent(new CustomEvent('volt:lang', { detail: { lang: v } }));
   };
 
+  const openLead = () => {
+    closeMenu();
+    setIsLangOpen(false);
+    setIsLeadOpen(true);
+  };
+  const closeLead = () => setIsLeadOpen(false);
+
   const goToSection = (hash: string) => {
-    setIsMenuOpen(false);
+    closeMenu();
     setIsLangOpen(false);
 
-    const scroll = () =>
-      document.querySelector(hash)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const scroll = () => document.querySelector(hash)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
     if (location.pathname !== '/') {
       navigate('/');
-      setTimeout(scroll, 120);
+      setTimeout(scroll, 140);
+      setTimeout(scroll, 420);
       return;
     }
-
     scroll();
   };
 
@@ -304,159 +367,318 @@ export default function Header() {
     }
   };
 
+  // ====== height setup (higher now) ======
+  const TOP_BAR_H = 72; // было 60 — теперь выше (логотип/кнопки не режутся)
+  const DESKTOP_OPEN_H = 300; // было 260 — чуть выше в раскрытом виде
+
+  const calculateHeight = () => {
+    const navEl = navRef.current;
+    if (!navEl) return TOP_BAR_H + 220;
+
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    if (isMobile) {
+      const contentEl = navEl.querySelector('[data-cardnav-content="1"]') as HTMLElement | null;
+      if (contentEl) {
+        const wasVis = contentEl.style.visibility;
+        const wasPE = contentEl.style.pointerEvents;
+        const wasPos = contentEl.style.position;
+        const wasH = contentEl.style.height;
+
+        contentEl.style.visibility = 'visible';
+        contentEl.style.pointerEvents = 'auto';
+        contentEl.style.position = 'static';
+        contentEl.style.height = 'auto';
+        contentEl.offsetHeight;
+
+        const padding = 12;
+        const contentHeight = contentEl.scrollHeight;
+
+        contentEl.style.visibility = wasVis;
+        contentEl.style.pointerEvents = wasPE;
+        contentEl.style.position = wasPos;
+        contentEl.style.height = wasH;
+
+        return TOP_BAR_H + contentHeight + padding;
+      }
+    }
+
+    return DESKTOP_OPEN_H;
+  };
+
+  const createTimeline = () => {
+    const navEl = navRef.current;
+    if (!navEl) return null;
+
+    gsap.set(navEl, { height: TOP_BAR_H, overflow: 'hidden' });
+    gsap.set(cardsRef.current, { y: 50, opacity: 0 });
+
+    const tl = gsap.timeline({ paused: true });
+    tl.to(navEl, { height: calculateHeight, duration: 0.42, ease: 'power3.out' });
+    tl.to(cardsRef.current, { y: 0, opacity: 1, duration: 0.38, ease: 'power3.out', stagger: 0.08 }, '-=0.12');
+    return tl;
+  };
+
+  useLayoutEffect(() => {
+    const tl = createTimeline();
+    tlRef.current = tl;
+
+    return () => {
+      tl?.kill();
+      tlRef.current = null;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lang]);
+
+  useLayoutEffect(() => {
+    const handleResize = () => {
+      if (!tlRef.current) return;
+
+      if (isMenuExpanded) {
+        const newHeight = calculateHeight();
+        gsap.set(navRef.current, { height: newHeight });
+
+        tlRef.current.kill();
+        const newTl = createTimeline();
+        if (newTl) {
+          newTl.progress(1);
+          tlRef.current = newTl;
+        }
+      } else {
+        tlRef.current.kill();
+        const newTl = createTimeline();
+        if (newTl) tlRef.current = newTl;
+      }
+
+      // if lang dropdown open — reposition portal
+      if (isLangOpen) {
+        requestAnimationFrame(() => {
+          const btn = langBtnRef.current;
+          if (!btn) return;
+          const r = btn.getBoundingClientRect();
+          setLangPos({ top: r.bottom + 8, left: r.right - 140, width: 140 });
+        });
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMenuExpanded, isLangOpen]);
+
+  const openMenu = () => {
+    const tl = tlRef.current;
+    if (!tl) return;
+    setIsLangOpen(false);
+    setIsHamburgerOpen(true);
+    setIsMenuExpanded(true);
+    tl.play(0);
+  };
+
+  const closeMenu = () => {
+    const tl = tlRef.current;
+    if (!tl) {
+      setIsHamburgerOpen(false);
+      setIsMenuExpanded(false);
+      return;
+    }
+    setIsHamburgerOpen(false);
+    tl.eventCallback('onReverseComplete', () => setIsMenuExpanded(false));
+    tl.reverse();
+  };
+
+  const toggleMenu = () => {
+    if (!isMenuExpanded) openMenu();
+    else closeMenu();
+  };
+
+  // open lead from event
+  useEffect(() => {
+    const handler = () => openLead();
+    window.addEventListener('volt:open-lead', handler as EventListener);
+    return () => window.removeEventListener('volt:open-lead', handler as EventListener);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Esc close
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsLangOpen(false);
+        if (isMenuExpanded) closeMenu();
+        if (isLeadOpen) closeLead();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMenuExpanded, isLeadOpen]);
+
+  // ====== Lang dropdown portal (fix overflow hidden) ======
+  const openLang = () => {
+    const btn = langBtnRef.current;
+    if (!btn) return;
+    const r = btn.getBoundingClientRect();
+    setLangPos({ top: r.bottom + 8, left: r.right - 140, width: 140 });
+    setIsLangOpen(true);
+  };
+
+  // outside click for portal dropdown
+  useEffect(() => {
+    const onDown = (e: MouseEvent) => {
+      if (!isLangOpen) return;
+      const portal = langPortalRef.current;
+      const btn = langBtnRef.current;
+      const tEl = e.target as Node;
+      if (portal && portal.contains(tEl)) return;
+      if (btn && btn.contains(tEl)) return;
+      setIsLangOpen(false);
+    };
+    window.addEventListener('mousedown', onDown);
+    return () => window.removeEventListener('mousedown', onDown);
+  }, [isLangOpen]);
+
+  // ====== card items (NOW GREEN) ======
+  const cardItems = useMemo(
+    () => [
+      {
+        label: t.menu.label1,
+        bg: 'hsl(var(--primary))',
+        title: 'text-black',
+        link: 'text-black/80 hover:text-black',
+        links: t.menu.links1,
+      },
+      {
+        label: t.menu.label2,
+        bg: 'hsl(var(--primary))',
+        title: 'text-black',
+        link: 'text-black/80 hover:text-black',
+        links: t.menu.links2,
+      },
+      {
+        label: t.menu.label3,
+        bg: 'hsl(var(--primary))',
+        title: 'text-black',
+        link: 'text-black/80 hover:text-black',
+        links: t.menu.links3,
+      },
+    ],
+    [t]
+  );
+
+  const setCardRef = (i: number) => (el: HTMLDivElement | null) => {
+    cardsRef.current[i] = el;
+  };
+
   return (
     <>
       <motion.header
-        className="fixed top-0 left-0 right-0 z-50"
-        style={{ backgroundColor: 'hsl(var(--light))' }}
-        initial={{ y: -100, opacity: 0 }}
+        className="fixed top-4 left-0 right-0 z-50 px-3 sm:px-6"
+        initial={{ y: -60, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       >
-        <div className="border-b border-border">
-          <div className="mx-auto max-w-[1920px] px-6 md:px-10 h-20 grid grid-cols-3 items-center">
-            {/* LEFT (Desktop nav only on XL+) */}
-            <div className="flex items-center gap-3">
-              <nav className="hidden xl:flex items-center gap-3">
-                {navIds.map((id) => (
-                  <MagneticButton
-                    key={id}
-                    as="div"
-                    className={hoverPill}
-                    onClick={() => goToSection(hrefMap[id])}
-                  >
-                    <span>{t.nav[id]}</span>
-                  </MagneticButton>
-                ))}
-              </nav>
-            </div>
-
-            {/* CENTER LOGO */}
-            <div className="flex justify-center">
-              <MagneticButton as="div">
-                <Link to="/" className="px-4 py-2 rounded-lg flex items-center justify-center bg-primary">
-                  <img
-                    src={logo}
-                    alt="Volt logo"
-                    className="h-10 md:h-11 w-auto select-none"
-                    draggable={false}
-                  />
-                </Link>
-              </MagneticButton>
-            </div>
-
-            {/* RIGHT */}
-            <div className="flex justify-end items-center gap-3 xl:gap-2">
-              {/* Desktop controls ONLY on XL+ */}
-              <div ref={langWrapRef} className="hidden xl:block relative">
-                <button
-                  type="button"
-                  className={langBtn}
-                  onClick={() => setIsLangOpen((v) => !v)}
-                >
-                  <span className="font-mono text-sm">{lang}</span>
-                </button>
-
-                <AnimatePresence>
-                  {isLangOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10, scale: 0.98 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 10, scale: 0.98 }}
-                      transition={{ duration: 0.16 }}
-                      className="absolute right-0 mt-2 w-[140px] rounded-2xl border border-black bg-[hsl(var(--light))] shadow-xl overflow-hidden z-[999]"
-                    >
-                      {(['EN', 'RU', 'UA'] as const).map((v) => (
-                        <button
-                          key={v}
-                          type="button"
-                          onClick={() => setLanguage(v)}
-                          className="w-full h-11 px-4 text-left font-mono text-sm text-black hover:bg-black hover:text-primary transition-colors"
-                        >
-                          {v}
-                        </button>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+        {/* wider on PC */}
+        <div className="mx-auto w-full max-w-[1280px]">
+          <nav
+            ref={(el) => (navRef.current = el)}
+            className="relative block rounded-2xl shadow-lg will-change-[height] overflow-hidden border border-black/10"
+            style={{ backgroundColor: 'hsl(var(--light))', height: TOP_BAR_H }}
+          >
+            {/* TOP BAR */}
+            <div
+              className="absolute inset-x-0 top-0 z-20 flex items-center justify-between"
+              style={{ height: TOP_BAR_H, padding: '0.7rem 0.9rem 0.7rem 1.2rem' }}
+            >
+              {/* LEFT: burger */}
+              <div
+                className="h-full flex flex-col items-center justify-center cursor-pointer gap-[7px] select-none"
+                onClick={toggleMenu}
+                role="button"
+                aria-label={isMenuExpanded ? 'Close menu' : 'Open menu'}
+                tabIndex={0}
+                style={{ color: '#000' }}
+              >
+                <div
+                  className="w-[30px] h-[2px] bg-current transition-transform duration-200"
+                  style={{
+                    transform: isHamburgerOpen ? 'translateY(4px) rotate(45deg)' : 'none',
+                    transformOrigin: '50% 50%',
+                    opacity: 0.95,
+                  }}
+                />
+                <div
+                  className="w-[30px] h-[2px] bg-current transition-transform duration-200"
+                  style={{
+                    transform: isHamburgerOpen ? 'translateY(-4px) rotate(-45deg)' : 'none',
+                    transformOrigin: '50% 50%',
+                    opacity: 0.95,
+                  }}
+                />
               </div>
 
-              <MagneticButton as="div" className="hidden xl:block">
-                <a className={`${tgBtn} gap-2`} href={telegramLink} target="_blank" rel="noreferrer">
-                  <span>{t.telegram}</span>
-                  <TelegramIcon />
-                </a>
-              </MagneticButton>
+              {/* CENTER: logo */}
+              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                <MagneticButton as="div">
+                  <Link to="/" className="px-4 py-2 rounded-xl flex items-center justify-center bg-primary">
+                    <img
+                      src={logo}
+                      alt="Volt logo"
+                      className="h-10 md:h-11 w-auto select-none"
+                      draggable={false}
+                    />
+                  </Link>
+                </MagneticButton>
+              </div>
 
-              <MagneticButton as="div" className="hidden xl:block" onClick={openLead}>
-                <span className={getStartedBtn}>{t.getStarted}</span>
-              </MagneticButton>
+              {/* RIGHT: controls (desktop in bar) */}
+              <div className="flex items-center gap-3">
+                {/* On small screens we hide them here and show inside menu */}
+                <div className="hidden md:flex items-center gap-3">
+                  <button
+                    ref={langBtnRef}
+                    type="button"
+                    className={langBtn}
+                    onClick={() => (isLangOpen ? setIsLangOpen(false) : openLang())}
+                  >
+                    <span className="font-mono text-sm">{lang}</span>
+                  </button>
 
-              {/* Mobile burger (now active BELOW XL) */}
-              <button
-                onClick={() => setIsMenuOpen((v) => !v)}
-                className="xl:hidden p-3 text-3xl leading-none"
-                aria-label="Open menu"
-              >
-                ☰
-              </button>
+                  <MagneticButton as="div">
+                    <a className={`${tgBtn} gap-2`} href={telegramLink} target="_blank" rel="noreferrer">
+                      <span>{t.telegram}</span>
+                      <TelegramIcon />
+                    </a>
+                  </MagneticButton>
+
+                  <MagneticButton as="div" onClick={openLead}>
+                    <span className={getStartedBtn}>{t.getStarted}</span>
+                  </MagneticButton>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      </motion.header>
 
-      {/* MOBILE / TABLET MENU (below XL) */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div
-            className="fixed inset-0 z-40 xl:hidden"
-            style={{ backgroundColor: 'hsl(var(--dark))' }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-          >
-            <button
-              onClick={() => {
-                setIsMenuOpen(false);
-                setIsLangOpen(false);
+            {/* CONTENT (cards) */}
+            <div
+              data-cardnav-content="1"
+              aria-hidden={!isMenuExpanded}
+              className="absolute left-0 right-0 z-10"
+              style={{
+                top: TOP_BAR_H,
+                bottom: 0,
+                padding: '10px',
+                visibility: isMenuExpanded ? 'visible' : 'hidden',
+                pointerEvents: isMenuExpanded ? 'auto' : 'none',
               }}
-              className="absolute top-5 right-5 p-3 text-white/80 hover:text-primary transition-colors"
-              aria-label="Close menu"
             >
-              <X className="w-7 h-7" />
-            </button>
-
-            <nav className="h-full pt-24 px-6 flex flex-col gap-3">
-              {navIds.map((id, index) => (
-                <motion.button
-                  key={id}
-                  type="button"
-                  onClick={() => goToSection(hrefMap[id])}
-                  className="w-full text-left rounded-2xl px-5 py-4 text-xl font-display font-semibold text-white/80 hover:bg-black hover:text-primary transition-colors"
-                  initial={{ opacity: 0, y: 14 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 14 }}
-                  transition={{ duration: 0.22, delay: index * 0.04 }}
-                >
-                  {t.nav[id]}
-                </motion.button>
-              ))}
-
-              <motion.div
-                className="mt-5 flex flex-col gap-3"
-                initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 14 }}
-                transition={{ duration: 0.22, delay: 0.22 }}
-              >
+              {/* MOBILE: show your controls inside menu */}
+              <div className="md:hidden mb-3 flex flex-col gap-3">
                 <div className="flex gap-3">
                   {(['EN', 'RU', 'UA'] as const).map((v) => (
                     <button
                       key={v}
                       onClick={() => setLanguage(v)}
-                      className={`h-12 px-5 rounded-full border border-white/25 text-white/90 font-mono text-sm transition-colors ${
-                        lang === v ? 'bg-white/10' : 'hover:bg-black hover:text-primary'
+                      className={`h-12 px-5 rounded-full border border-black/15 text-black font-mono text-sm transition-colors ${
+                        lang === v ? 'bg-black/5' : 'hover:bg-black hover:text-primary'
                       }`}
                     >
                       {v}
@@ -465,7 +687,7 @@ export default function Header() {
                 </div>
 
                 <a
-                  className="h-12 rounded-full px-6 font-semibold border border-white/25 text-white/90 hover:bg-black hover:text-primary transition-colors inline-flex items-center justify-between"
+                  className="h-12 rounded-full px-6 font-semibold border border-black/15 text-black hover:bg-black hover:text-primary transition-colors inline-flex items-center justify-between"
                   href={telegramLink}
                   target="_blank"
                   rel="noreferrer"
@@ -480,142 +702,203 @@ export default function Header() {
                 >
                   {t.getStarted}
                 </button>
-              </motion.div>
-            </nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              </div>
 
-      {/* LEAD MODAL (unchanged) */}
-      <AnimatePresence>
-        {isLeadOpen && (
-          <motion.div
-            className="fixed inset-0 z-[60] flex items-center justify-center px-3 sm:px-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <button aria-label="Close lead form" onClick={closeLead} className="absolute inset-0 bg-black/70" />
-
-            <motion.div
-              className="relative w-full max-w-[42rem] rounded-3xl border border-border bg-background shadow-2xl max-h-[92vh] overflow-auto"
-              initial={{ y: 22, opacity: 0, scale: 0.99 }}
-              animate={{ y: 0, opacity: 1, scale: 1 }}
-              exit={{ y: 22, opacity: 0, scale: 0.99 }}
-              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            >
-              <div className="p-5 sm:p-8">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <div className="text-black text-sm font-mono uppercase tracking-widest">{t.lead.kicker}</div>
-                    <div className="font-display font-bold text-2xl sm:text-4xl text-foreground mt-2">{t.lead.title}</div>
-                    <div className="text-muted-foreground mt-2">{t.lead.subtitle}</div>
-                  </div>
-
-                  <button
-                    onClick={closeLead}
-                    className="rounded-full p-2 text-foreground/60 hover:text-foreground transition-colors"
-                    aria-label="Close"
+              {/* Cards */}
+              <div className="h-full flex items-end gap-3">
+                {cardItems.slice(0, 3).map((item, idx) => (
+                  <div
+                    key={item.label}
+                    ref={setCardRef(idx)}
+                    className="flex-1 min-w-0 rounded-2xl p-4 flex flex-col gap-2 select-none border border-black/10"
+                    style={{ background: item.bg }}
                   >
-                    <X className="w-6 h-6" />
-                  </button>
+                    <div className={`font-normal text-[22px] tracking-[-0.5px] ${item.title}`}>{item.label}</div>
+
+                    <div className="mt-auto flex flex-col gap-1">
+                      {item.links.map((lnk, i) => (
+                        <button
+                          key={`${lnk.id}-${i}`}
+                          type="button"
+                          onClick={() => goToSection(hrefMap[lnk.id])}
+                          className={`text-left text-[16px] inline-flex items-center gap-2 transition-colors ${item.link}`}
+                        >
+                          <span className="inline-block translate-y-[1px]">↗</span>
+                          {lnk.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* mobile column */}
+              <style>
+                {`
+                  @media (max-width: 768px) {
+                    [data-cardnav-content="1"] > .h-full {
+                      flex-direction: column;
+                      align-items: stretch;
+                      justify-content: flex-start;
+                    }
+                    [data-cardnav-content="1"] > .h-full > div {
+                      flex: 0 0 auto;
+                      min-height: 72px;
+                    }
+                  }
+                `}
+              </style>
+            </div>
+          </nav>
+        </div>
+      </motion.header>
+
+      {/* LANG DROPDOWN (PORTAL) */}
+      {isLangOpen &&
+        createPortal(
+          <div
+            ref={(el) => (langPortalRef.current = el)}
+            className="rounded-2xl border border-black bg-[hsl(var(--light))] shadow-xl overflow-hidden z-[99999]"
+            style={{
+              position: 'fixed',
+              top: langPos.top,
+              left: langPos.left,
+              width: langPos.width,
+            }}
+          >
+            {(['EN', 'RU', 'UA'] as const).map((v) => (
+              <button
+                key={v}
+                type="button"
+                onClick={() => setLanguage(v)}
+                className="w-full h-11 px-4 text-left font-mono text-sm text-black hover:bg-black hover:text-primary transition-colors"
+              >
+                {v}
+              </button>
+            ))}
+          </div>,
+          document.body
+        )}
+
+      {/* LEAD MODAL (как было) */}
+      {isLeadOpen && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center px-3 sm:px-4">
+          <button aria-label="Close lead form" onClick={closeLead} className="absolute inset-0 bg-black/70" />
+
+          <div className="relative w-full max-w-[42rem] rounded-3xl border border-border bg-background shadow-2xl max-h-[92vh] overflow-auto">
+            <div className="p-5 sm:p-8">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <div className="text-black text-sm font-mono uppercase tracking-widest">{t.lead.kicker}</div>
+                  <div className="font-display font-bold text-2xl sm:text-4xl text-foreground mt-2">
+                    {t.lead.title}
+                  </div>
+                  <div className="text-muted-foreground mt-2">{t.lead.subtitle}</div>
                 </div>
 
-                <form
-                  className="mt-6 space-y-4"
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    const fd = new FormData(e.currentTarget);
-
-                    submitLead({
-                      name: String(fd.get('name') || ''),
-                      telegram: String(fd.get('telegram') || ''),
-                      industry: String(fd.get('industry') || ''),
-                      project: String(fd.get('project') || ''),
-                      source: window.location.pathname || 'unknown',
-                      lang,
-                    });
-                  }}
+                <button
+                  onClick={closeLead}
+                  className="rounded-full p-2 text-foreground/60 hover:text-foreground transition-colors"
+                  aria-label="Close"
                 >
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-foreground mb-2">{t.lead.nameLabel}</label>
-                      <input
-                        name="name"
-                        required
-                        className="w-full rounded-2xl border border-border bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-[hsl(var(--volt))]"
-                        placeholder={t.lead.namePh}
-                      />
-                    </div>
+                  ✕
+                </button>
+              </div>
 
-                    <div>
-                      <label className="block text-sm font-semibold text-foreground mb-2">{t.lead.telegramLabel}</label>
-                      <input
-                        name="telegram"
-                        required
-                        type="text"
-                        inputMode="text"
-                        autoCapitalize="off"
-                        autoCorrect="off"
-                        spellCheck={false}
-                        className="w-full rounded-2xl border border-border bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-[hsl(var(--volt))]"
-                        placeholder={t.lead.telegramPh}
-                      />
-                    </div>
-                  </div>
+              <form
+                className="mt-6 space-y-4"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const fd = new FormData(e.currentTarget);
 
+                  submitLead({
+                    name: String(fd.get('name') || ''),
+                    telegram: String(fd.get('telegram') || ''),
+                    industry: String(fd.get('industry') || ''),
+                    project: String(fd.get('project') || ''),
+                    source: window.location.pathname || 'unknown',
+                    lang,
+                  });
+                }}
+              >
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-semibold text-foreground mb-2">{t.lead.industryLabel}</label>
-                    <select
-                      name="industry"
+                    <label className="block text-sm font-semibold text-foreground mb-2">{t.lead.nameLabel}</label>
+                    <input
+                      name="name"
                       required
-                      defaultValue=""
-                      className="w-full h-[52px] rounded-2xl border border-border bg-white px-4 outline-none focus:ring-2 focus:ring-[hsl(var(--volt))]"
-                    >
-                      <option value="" disabled>
-                        {t.lead.industryPh}
-                      </option>
-                      {t.lead.industryOptions.map((o) => (
-                        <option key={o.value} value={o.value}>
-                          {o.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-foreground mb-2">{t.lead.projectLabel}</label>
-                    <textarea
-                      name="project"
-                      rows={5}
-                      className="w-full resize-none rounded-2xl border border-border bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-[hsl(var(--volt))]"
-                      placeholder={t.lead.projectPh}
+                      className="w-full rounded-2xl border border-border bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-[hsl(var(--volt))]"
+                      placeholder={t.lead.namePh}
                     />
                   </div>
 
-                  <div className="flex flex-col sm:flex-row gap-3 sm:justify-end pt-2">
-                    <button
-                      type="button"
-                      onClick={closeLead}
-                      className="rounded-full h-12 px-6 font-semibold border border-black text-black bg-transparent hover:bg-black hover:text-primary transition-colors"
-                      disabled={isSending}
-                    >
-                      {t.lead.cancel}
-                    </button>
-                    <button
-                      type="submit"
-                      className="rounded-full h-12 px-6 font-semibold bg-primary text-primary-foreground hover:bg-black hover:text-primary transition-colors disabled:opacity-60"
-                      disabled={isSending}
-                    >
-                      {isSending ? t.lead.sending : t.lead.send}
-                    </button>
+                  <div>
+                    <label className="block text-sm font-semibold text-foreground mb-2">{t.lead.telegramLabel}</label>
+                    <input
+                      name="telegram"
+                      required
+                      type="text"
+                      inputMode="text"
+                      autoCapitalize="off"
+                      autoCorrect="off"
+                      spellCheck={false}
+                      className="w-full rounded-2xl border border-border bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-[hsl(var(--volt))]"
+                      placeholder={t.lead.telegramPh}
+                    />
                   </div>
-                </form>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-foreground mb-2">{t.lead.industryLabel}</label>
+                  <select
+                    name="industry"
+                    required
+                    defaultValue=""
+                    className="w-full h-[52px] rounded-2xl border border-border bg-white px-4 outline-none focus:ring-2 focus:ring-[hsl(var(--volt))]"
+                  >
+                    <option value="" disabled>
+                      {t.lead.industryPh}
+                    </option>
+                    {t.lead.industryOptions.map((o) => (
+                      <option key={o.value} value={o.value}>
+                        {o.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-foreground mb-2">{t.lead.projectLabel}</label>
+                  <textarea
+                    name="project"
+                    rows={5}
+                    className="w-full resize-none rounded-2xl border border-border bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-[hsl(var(--volt))]"
+                    placeholder={t.lead.projectPh}
+                  />
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-3 sm:justify-end pt-2">
+                  <button
+                    type="button"
+                    onClick={closeLead}
+                    className="rounded-full h-12 px-6 font-semibold border border-black text-black bg-transparent hover:bg-black hover:text-primary transition-colors"
+                    disabled={isSending}
+                  >
+                    {t.lead.cancel}
+                  </button>
+                  <button
+                    type="submit"
+                    className="rounded-full h-12 px-6 font-semibold bg-primary text-primary-foreground hover:bg-black hover:text-primary transition-colors disabled:opacity-60"
+                    disabled={isSending}
+                  >
+                    {isSending ? t.lead.sending : t.lead.send}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
